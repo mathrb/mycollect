@@ -1,4 +1,4 @@
-![Python application](https://github.com/mathrb/mycollect/workflows/Python%20application/badge.svg?branch=develop)
+![Build and Test Oracle](https://github.com/mathrb/mycollect/workflows/Build%20and%20Test%20Oracle/badge.svg?branch=develop)
 
 Collect:
 
