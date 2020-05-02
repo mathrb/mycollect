@@ -2,7 +2,7 @@
 """
 import json
 from urllib.parse import urlparse
-from typing import Optional, Generator
+from typing import Optional, Iterator
 
 from tweepy import OAuthHandler, Stream
 from tweepy.streaming import StreamListener
@@ -176,7 +176,7 @@ class TwitterCollector(StreamListener):
             yield url["expanded_url"]
 
     @staticmethod
-    def get_urls_in_entities(item: dict) -> Generator[str]:
+    def get_urls_in_entities(item: dict) -> Iterator[str]:
         """Gets urls in entities
 
         Arguments:
