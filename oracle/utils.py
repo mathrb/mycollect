@@ -1,3 +1,7 @@
+"""Utils for oracle
+"""
+
+
 def get_class(kls):
     """
     from string, returns the correspondent class
