@@ -144,7 +144,6 @@ class TwitterCollector(StreamListener):
         return text
 
     @staticmethod
-    @staticmethod
     def get_text_of_urls_entities(item: dict) -> str:
         """Get the urls from the tweet
 
