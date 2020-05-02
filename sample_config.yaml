@@ -1,0 +1,63 @@
+collectors:
+  - name: twitter
+    type: oracle.collectors.twitter_collector.TwitterCollector
+    args:
+      output_file: new_twitter_collect.jsonl
+      consumer_key: twitter consumer_key
+      consumer_secret: twitter consumer_secret
+      access_token: twitter access_token
+      access_secret: twitter access_secret
+      low_priority_url:
+        - t.co
+        - twitter.com
+      track:
+        - python logging
+        - python yaml
+        - python caching
+        - python prod
+        - python best practice
+        - python kafka
+        - python async
+        - gog free
+        - wsl linux
+        - wsl windows
+        - .net core
+        - pvt canada
+        - visa canada
+        - windows terminal
+
+processors:
+  - name: file
+    type: oracle.processors.file_processor.FileProcessor
+    args:
+      input_file: new_twitter_collect.jsonl
+      aws_access_key: aws aws_access_key
+      aws_secret_key: aws aws_secret_key
+
+logging:  
+  version: 1
+  disable_existing_loggers: true
+  handlers:
+      console:
+        level: DEBUG
+        class : logging.StreamHandler
+        formatter: plain_colored
+        stream  : ext://sys.stdout
+      file:        
+        level: INFO
+        class : logging.handlers.TimedRotatingFileHandler
+        formatter: json
+        filename: logs/logconfig.log
+        when: D
+        interval: 1
+  formatters:
+      json: 
+        class: pythonjsonlogger.jsonlogger.JsonFormatter
+      plain_colored:
+        (): oracle.logger.plain_colored_formatter
+  loggers:
+    oracle:
+      handlers: 
+        - file
+        - console
+      level: DEBUG
