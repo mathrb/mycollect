@@ -7,9 +7,10 @@ from oracle.logger import create_logger
 
 class TwitterCollector(StreamListener):
 
-    def __init__(self, output_file, consumer_key, consumer_secret, access_token, access_secret, low_priority_url, track):
+    def __init__(self, output_file, consumer_key, consumer_secret, access_token, access_secret, languages, low_priority_url, track):
         self._logger = create_logger().bind(collector='twitter')
         self._track = track
+        self._languages = languages
         self._low_priority_url = low_priority_url
         self._output_file = output_file
         self._auth = OAuthHandler(consumer_key, consumer_secret)
@@ -17,7 +18,7 @@ class TwitterCollector(StreamListener):
 
     def collect(self):
         self._twitter_stream = Stream(self._auth, self)
-        self._twitter_stream.filter(track=self._track, is_async=True)
+        self._twitter_stream.filter(track=self._track,languages=self._languages, is_async=True)
 
     def stop(self):
         self._twitter_stream.disconnect()

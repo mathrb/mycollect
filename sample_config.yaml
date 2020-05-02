@@ -7,6 +7,9 @@ collectors:
       consumer_secret: twitter consumer_secret
       access_token: twitter access_token
       access_secret: twitter access_secret
+      languages:
+        - en
+        - fr
       low_priority_url:
         - t.co
         - twitter.com
