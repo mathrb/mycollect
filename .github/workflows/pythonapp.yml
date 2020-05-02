@@ -33,6 +33,7 @@ jobs:
       run: |
         # stop the build if there are Python syntax errors or undefined names
         pipenv run pylint oracle
-#    - name: Test with pytest
-#      run: |
-#        pytest
+    - name: Test with pytest
+      run: |
+        pipenv run pytest .
+#        pipenv run pytest . --cov=satagent --cov-fail-under 90
