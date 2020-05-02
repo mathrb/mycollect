@@ -124,8 +124,8 @@ class FileProcessor():
 
 if __name__ == "__main__":
     import yaml
-    configuration = yaml.safe_load(open("config.yaml", "rb"))
-    for processor in configuration["processors"]:
+    CONFIGURATION = yaml.safe_load(open("config.yaml", "rb"))
+    for processor in CONFIGURATION["processors"]:
         if processor["name"] == "file":
             fp = FileProcessor(**processor["args"])
             fp.process()
