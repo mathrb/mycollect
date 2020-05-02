@@ -1,3 +1,5 @@
+![Python application](https://github.com/mathrb/mycollect/workflows/Python%20application/badge.svg?branch=develop)
+
 Collect:
 
 * configuration file containing 
