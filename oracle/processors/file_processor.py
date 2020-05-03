@@ -4,8 +4,6 @@ import json
 import os
 from collections import defaultdict
 
-import boto3
-
 from oracle.logger import create_logger
 from oracle.structures import OracleItem
 
