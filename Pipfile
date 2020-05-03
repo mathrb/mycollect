@@ -16,6 +16,7 @@ python-json-logger = "*"
 boto3 = "*"
 pyaml = "*"
 schedule = "*"
+Jinja2 = "*"
 
 [requires]
 python_version = "3.8"

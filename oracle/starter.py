@@ -9,6 +9,33 @@ import yaml
 from oracle.logger import configure, create_logger
 from oracle.utils import get_class
 
+def load_types(items):
+    """Loads the types defined in configuration section
+
+    Arguments:
+        items {list} -- list of types defined in configuration
+
+    Returns:
+        dict -- key: name, value: instance
+    """
+    collection = {}
+    for item in items:
+        item_class = get_class(item["type"])
+        args = item.get("args", {})
+        item_instance = item_class(**args)
+        collection[item["name"]] = item_instance
+    return collection
+
+def execute_processing(processor, outputs):
+    """Starts processing the data
+
+    Arguments:
+        processor {processor} -- processor
+        outputs {list} -- list of output instances
+    """
+    result = processor.process()
+    for output in outputs:
+        output.output(result)
 
 async def main_loop():
     """This is the run forever loop definition
@@ -19,27 +46,16 @@ async def main_loop():
     configure(configuration["logging"])
     logger = create_logger()
 
-    collectors = {}
-
-    for collector in configuration["collectors"]:
-        collector_class = get_class(collector["type"])
-        args = collector.get("args", {})
-        collector_instance = collector_class(**args)
-        collectors[collector["name"]] = collector_instance
-
-    processors = {}
-    for processor in configuration["processors"]:
-        processor_class = get_class(processor["type"])
-        args = processor.get("args", {})
-        processor_instance = processor_class(**args)
-        processors[processor["name"]] = processor_instance
+    collectors = load_types(configuration["collectors"])
+    processors = load_types(configuration["processors"])
+    outputs = load_types(configuration["outputs"])
 
     for collector in collectors:
         logger.info("starting collector", collector=collector)
         collectors[collector].collect()
 
     for processor in processors:
-        schedule.every().day.at("02:00").do(processors[processor].process)
+        schedule.every().day.at("02:00").do(execute_processing, processors[processor], outputs)
 
     try:
         while True:
