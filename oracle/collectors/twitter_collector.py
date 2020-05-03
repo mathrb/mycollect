@@ -72,7 +72,7 @@ class TwitterCollector(StreamListener):
             str -- category of the tweet
         """
         best_track = None
-        full_text = self.get_track_text(tweet).lower()
+        full_text = self.get_text_for_category_selection(tweet).lower()
         for track in self._track:
             words = track.split()
             i = len(words)
@@ -97,20 +97,42 @@ class TwitterCollector(StreamListener):
         Returns:
             str -- url of the tweet
         """
+        urls = set(TwitterCollector.get_url_stack(tweet))
         real_url = None
-        if "entities" in tweet:
-            for url in TwitterCollector.get_expanded_urls_in_entities(tweet["entities"]):
-                parsed_url = urlparse(url)
-                if real_url is None:
-                    real_url = parsed_url
-                if (real_url.netloc in self._low_priority_url
-                        and parsed_url.netloc not in self._low_priority_url):
-                    real_url = parsed_url
+        for url in urls:
+            parsed_url = urlparse(url)
+            if real_url is None:
+                real_url = parsed_url
+            if (real_url.netloc in self._low_priority_url
+                    and parsed_url.netloc not in self._low_priority_url):
+                real_url = parsed_url
         return real_url.geturl() if real_url else None
 
     @staticmethod
-    def get_track_text(tweet: dict) -> str:
-        """Gets the text which contains filter keywords
+    def get_url_stack(tweet: dict) -> Iterator[str]:
+        """Returns all expanded urls from a tweet
+
+        Arguments:
+            tweet {dict} -- tweet
+
+        Yields:
+            str -- url
+        """
+        if "extended_tweet" in tweet:
+            yield from TwitterCollector.get_url_stack(tweet["extended_tweet"])
+        if "retweeted_status" in tweet:
+            yield from TwitterCollector.get_url_stack(tweet["retweeted_status"])
+        if "quoted_status" in tweet:
+            yield from TwitterCollector.get_url_stack(tweet["quoted_status"])
+        if "entities" in tweet:
+            if "urls" in tweet["entities"]:
+                for url in tweet["entities"]["urls"]:
+                    if "expanded_url" in url:
+                        yield url["expanded_url"]
+
+    @staticmethod
+    def get_text_for_category_selection(tweet):
+        """Returns all text in which Twitter look for term matching
 
         Arguments:
             tweet {dict} -- tweet
@@ -118,72 +140,43 @@ class TwitterCollector(StreamListener):
         Returns:
             str -- text
         """
-        if "text" in tweet:
-            text = tweet["text"]
-        else:
-            text = ''
-        if "extended_tweet" in tweet and "full_text" in tweet["extended_tweet"]:
-            text = tweet["extended_tweet"]["full_text"]
-            if 'entities' in tweet["extended_tweet"]:
-                text += TwitterCollector.get_text_of_urls_entities(
-                    tweet["extended_tweet"]["entities"])
-        if 'entities' in tweet:
-            text += TwitterCollector.get_text_of_urls_entities(
-                tweet["entities"])
-        if 'quoted_status' in tweet:
-            if 'extended_tweet' in tweet["quoted_status"]:
-                text += ' ' + \
-                    tweet["quoted_status"]["extended_tweet"]["full_text"]
-                if "entities" in tweet["quoted_status"]["extended_tweet"]:
-                    text += TwitterCollector.get_text_of_urls_entities(
-                        tweet["quoted_status"]["extended_tweet"])
-            else:
-                text += ' ' + tweet["quoted_status"]["text"]
+        text = tweet.get("text", "")
+        if "extended_tweet" in tweet:
+            text += tweet["extended_tweet"].get("full_text", "")
+            text += TwitterCollector.get_entities_text(tweet["extended_tweet"])
         if "retweeted_status" in tweet:
-            return TwitterCollector.get_track_text(tweet["retweeted_status"])
+            text += TwitterCollector.get_text_for_category_selection(
+                tweet["retweeted_status"])
+        if "quoted_status" in tweet:
+            text += TwitterCollector.get_text_for_category_selection(
+                tweet["quoted_status"])
+        text += TwitterCollector.get_entities_text(tweet)
         return text
 
     @staticmethod
-    def get_text_of_urls_entities(item: dict) -> str:
-        """Get the urls from the tweet
+    def get_entities_text(tweet):
+        """Gets the text from tweet entities
 
         Arguments:
-            item {dict} -- tweet
+            tweet {dict} -- tweet
 
         Returns:
-            str -- urls join by space
+            str -- text from entities
         """
         text = ''
-        for url in TwitterCollector.get_urls_in_entities(item):
-            if 'expanded_url' in url:
-                text += ' ' + url['expanded_url']
-            if 'display_url' in url:
-                text += ' ' + url['display_url']
+        for item in tweet["entities"].get("hastags", []):
+            text += item["text"] + " "
+        for item in tweet["entities"].get("urls", []):
+            if "expanded_url" in item:
+                text += item["expanded_url"] + " "
+            if "display_url" in item:
+                text += item["display_url"] + " "
+        for item in tweet["entities"].get("user_mentions", []):
+            if "screen_name" in item:
+                text += item["screen_name"] + " "
+        for item in tweet["entities"].get("media", []):
+            if "expanded_url" in item:
+                text += item["expanded_url"] + " "
+            if "display_url" in item:
+                text += item["display_url"] + " "
         return text
-
-    @staticmethod
-    def get_expanded_urls_in_entities(item: dict):
-        """Gets the expanded urls
-
-        Arguments:
-            item {dict} -- tweet
-
-        Yields:
-            str -- url
-        """
-        for url in TwitterCollector.get_urls_in_entities(item):
-            yield url["expanded_url"]
-
-    @staticmethod
-    def get_urls_in_entities(item: dict) -> Iterator[str]:
-        """Gets urls in entities
-
-        Arguments:
-            item {dict} -- tweet entity
-
-        Yields:
-            str -- url
-        """
-        if "urls" in item:
-            for url in item["urls"]:
-                yield url

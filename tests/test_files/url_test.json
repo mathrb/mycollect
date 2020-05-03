@@ -1,0 +1,362 @@
+{
+    "created_at": "Sat May 02 20:38:05 +0000 2020",
+    "id": 1256684408125431809,
+    "id_str": "1256684408125431809",
+    "text": "RT @VisualStudio: Lambas! OOP!\nAsync/await!\n\n@HockeyGeekGirl and @GeekTrainer bring you MORE #Python for Beginners (the intermediate stuff)\u2026",
+    "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>",
+    "truncated": false,
+    "in_reply_to_status_id": null,
+    "in_reply_to_status_id_str": null,
+    "in_reply_to_user_id": null,
+    "in_reply_to_user_id_str": null,
+    "in_reply_to_screen_name": null,
+    "user": {
+        "id": 14782381,
+        "id_str": "14782381",
+        "name": "DarkCloud14",
+        "screen_name": "DarkCloud14",
+        "location": "Germany",
+        "url": null,
+        "description": null,
+        "translator_type": "none",
+        "protected": false,
+        "verified": false,
+        "followers_count": 33,
+        "friends_count": 147,
+        "listed_count": 2,
+        "favourites_count": 18407,
+        "statuses_count": 996,
+        "created_at": "Thu May 15 05:32:15 +0000 2008",
+        "utc_offset": null,
+        "time_zone": null,
+        "geo_enabled": false,
+        "lang": null,
+        "contributors_enabled": false,
+        "is_translator": false,
+        "profile_background_color": "1A1B1F",
+        "profile_background_image_url": "http://abs.twimg.com/images/themes/theme9/bg.gif",
+        "profile_background_image_url_https": "https://abs.twimg.com/images/themes/theme9/bg.gif",
+        "profile_background_tile": false,
+        "profile_link_color": "2FC2EF",
+        "profile_sidebar_border_color": "181A1E",
+        "profile_sidebar_fill_color": "252429",
+        "profile_text_color": "666666",
+        "profile_use_background_image": true,
+        "profile_image_url": "http://pbs.twimg.com/profile_images/703995297639301121/pN6pohIo_normal.jpg",
+        "profile_image_url_https": "https://pbs.twimg.com/profile_images/703995297639301121/pN6pohIo_normal.jpg",
+        "profile_banner_url": "https://pbs.twimg.com/profile_banners/14782381/1456680607",
+        "default_profile": false,
+        "default_profile_image": false,
+        "following": null,
+        "follow_request_sent": null,
+        "notifications": null
+    },
+    "geo": null,
+    "coordinates": null,
+    "place": null,
+    "contributors": null,
+    "retweeted_status": {
+        "created_at": "Sat May 02 20:33:01 +0000 2020",
+        "id": 1256683132230696960,
+        "id_str": "1256683132230696960",
+        "text": "Lambas! OOP!\nAsync/await!\n\n@HockeyGeekGirl and @GeekTrainer bring you MORE #Python for Beginners (the intermediate\u2026 https://t.co/41TZ9wd8OS",
+        "display_text_range": [
+            0,
+            140
+        ],
+        "source": "<a href=\"https://prod1.sprinklr.com\" rel=\"nofollow\">Sprinklr Publishing</a>",
+        "truncated": true,
+        "in_reply_to_status_id": null,
+        "in_reply_to_status_id_str": null,
+        "in_reply_to_user_id": null,
+        "in_reply_to_user_id_str": null,
+        "in_reply_to_screen_name": null,
+        "user": {
+            "id": 16913772,
+            "id_str": "16913772",
+            "name": "Visual Studio",
+            "screen_name": "VisualStudio",
+            "location": "Redmond, WA, USA",
+            "url": null,
+            "description": "Follow @VisualStudio for the latest news and related information for developers. For Visual Studio for Mac news, updates and support, follow @VisualStudioMac.",
+            "translator_type": "none",
+            "protected": false,
+            "verified": true,
+            "followers_count": 493627,
+            "friends_count": 945,
+            "listed_count": 5708,
+            "favourites_count": 664,
+            "statuses_count": 67173,
+            "created_at": "Wed Oct 22 22:01:24 +0000 2008",
+            "utc_offset": null,
+            "time_zone": null,
+            "geo_enabled": true,
+            "lang": null,
+            "contributors_enabled": false,
+            "is_translator": false,
+            "profile_background_color": "68217A",
+            "profile_background_image_url": "http://abs.twimg.com/images/themes/theme1/bg.png",
+            "profile_background_image_url_https": "https://abs.twimg.com/images/themes/theme1/bg.png",
+            "profile_background_tile": false,
+            "profile_link_color": "68217A",
+            "profile_sidebar_border_color": "FFFFFF",
+            "profile_sidebar_fill_color": "FFFFFF",
+            "profile_text_color": "1F222B",
+            "profile_use_background_image": true,
+            "profile_image_url": "http://pbs.twimg.com/profile_images/1149052415280238592/iG1VP965_normal.jpg",
+            "profile_image_url_https": "https://pbs.twimg.com/profile_images/1149052415280238592/iG1VP965_normal.jpg",
+            "profile_banner_url": "https://pbs.twimg.com/profile_banners/16913772/1479509818",
+            "default_profile": false,
+            "default_profile_image": false,
+            "following": null,
+            "follow_request_sent": null,
+            "notifications": null
+        },
+        "geo": null,
+        "coordinates": null,
+        "place": null,
+        "contributors": null,
+        "is_quote_status": false,
+        "extended_tweet": {
+            "full_text": "Lambas! OOP!\nAsync/await!\n\n@HockeyGeekGirl and @GeekTrainer bring you MORE #Python for Beginners (the intermediate stuff): https://t.co/fbAf86EgZt https://t.co/SiymQfzZN1",
+            "display_text_range": [
+                0,
+                146
+            ],
+            "entities": {
+                "hashtags": [
+                    {
+                        "text": "Python",
+                        "indices": [
+                            75,
+                            82
+                        ]
+                    }
+                ],
+                "urls": [
+                    {
+                        "url": "https://t.co/fbAf86EgZt",
+                        "expanded_url": "https://msft.it/6010Tg0qC",
+                        "display_url": "msft.it/6010Tg0qC",
+                        "indices": [
+                            123,
+                            146
+                        ]
+                    }
+                ],
+                "user_mentions": [
+                    {
+                        "screen_name": "HockeyGeekGirl",
+                        "name": "Susan Ibach",
+                        "id": 279153686,
+                        "id_str": "279153686",
+                        "indices": [
+                            27,
+                            42
+                        ]
+                    },
+                    {
+                        "screen_name": "GeekTrainer",
+                        "name": "Christopher Harrison",
+                        "id": 21051364,
+                        "id_str": "21051364",
+                        "indices": [
+                            47,
+                            59
+                        ]
+                    }
+                ],
+                "symbols": [],
+                "media": [
+                    {
+                        "id": 1256683128606859265,
+                        "id_str": "1256683128606859265",
+                        "indices": [
+                            147,
+                            170
+                        ],
+                        "description": "Text reads \"Lambas! OOP!\nAsync/await!\n\n@HockeyGeekGirl and @GeekTrainer bring you MORE #Python for Beginners (the intermediate stuff).\" Image of a screen reading \"More Python for Beginners\" on a gray background.",
+                        "media_url": "http://pbs.twimg.com/media/EXCipbPWoAEYs7Q.jpg",
+                        "media_url_https": "https://pbs.twimg.com/media/EXCipbPWoAEYs7Q.jpg",
+                        "url": "https://t.co/SiymQfzZN1",
+                        "display_url": "pic.twitter.com/SiymQfzZN1",
+                        "expanded_url": "https://twitter.com/VisualStudio/status/1256683132230696960/photo/1",
+                        "type": "photo",
+                        "sizes": {
+                            "medium": {
+                                "w": 1200,
+                                "h": 675,
+                                "resize": "fit"
+                            },
+                            "thumb": {
+                                "w": 150,
+                                "h": 150,
+                                "resize": "crop"
+                            },
+                            "small": {
+                                "w": 680,
+                                "h": 383,
+                                "resize": "fit"
+                            },
+                            "large": {
+                                "w": 1920,
+                                "h": 1080,
+                                "resize": "fit"
+                            }
+                        }
+                    }
+                ]
+            },
+            "extended_entities": {
+                "media": [
+                    {
+                        "id": 1256683128606859265,
+                        "id_str": "1256683128606859265",
+                        "indices": [
+                            147,
+                            170
+                        ],
+                        "description": "Text reads \"Lambas! OOP!\nAsync/await!\n\n@HockeyGeekGirl and @GeekTrainer bring you MORE #Python for Beginners (the intermediate stuff).\" Image of a screen reading \"More Python for Beginners\" on a gray background.",
+                        "media_url": "http://pbs.twimg.com/media/EXCipbPWoAEYs7Q.jpg",
+                        "media_url_https": "https://pbs.twimg.com/media/EXCipbPWoAEYs7Q.jpg",
+                        "url": "https://t.co/SiymQfzZN1",
+                        "display_url": "pic.twitter.com/SiymQfzZN1",
+                        "expanded_url": "https://twitter.com/VisualStudio/status/1256683132230696960/photo/1",
+                        "type": "photo",
+                        "sizes": {
+                            "medium": {
+                                "w": 1200,
+                                "h": 675,
+                                "resize": "fit"
+                            },
+                            "thumb": {
+                                "w": 150,
+                                "h": 150,
+                                "resize": "crop"
+                            },
+                            "small": {
+                                "w": 680,
+                                "h": 383,
+                                "resize": "fit"
+                            },
+                            "large": {
+                                "w": 1920,
+                                "h": 1080,
+                                "resize": "fit"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "quote_count": 0,
+        "reply_count": 0,
+        "retweet_count": 3,
+        "favorite_count": 10,
+        "entities": {
+            "hashtags": [
+                {
+                    "text": "Python",
+                    "indices": [
+                        75,
+                        82
+                    ]
+                }
+            ],
+            "urls": [
+                {
+                    "url": "https://t.co/41TZ9wd8OS",
+                    "expanded_url": "https://twitter.com/i/web/status/1256683132230696960",
+                    "display_url": "twitter.com/i/web/status/1\u2026",
+                    "indices": [
+                        116,
+                        139
+                    ]
+                }
+            ],
+            "user_mentions": [
+                {
+                    "screen_name": "HockeyGeekGirl",
+                    "name": "Susan Ibach",
+                    "id": 279153686,
+                    "id_str": "279153686",
+                    "indices": [
+                        27,
+                        42
+                    ]
+                },
+                {
+                    "screen_name": "GeekTrainer",
+                    "name": "Christopher Harrison",
+                    "id": 21051364,
+                    "id_str": "21051364",
+                    "indices": [
+                        47,
+                        59
+                    ]
+                }
+            ],
+            "symbols": []
+        },
+        "favorited": false,
+        "retweeted": false,
+        "possibly_sensitive": false,
+        "filter_level": "low",
+        "lang": "en"
+    },
+    "is_quote_status": false,
+    "quote_count": 0,
+    "reply_count": 0,
+    "retweet_count": 0,
+    "favorite_count": 0,
+    "entities": {
+        "hashtags": [
+            {
+                "text": "Python",
+                "indices": [
+                    93,
+                    100
+                ]
+            }
+        ],
+        "urls": [],
+        "user_mentions": [
+            {
+                "screen_name": "VisualStudio",
+                "name": "Visual Studio",
+                "id": 16913772,
+                "id_str": "16913772",
+                "indices": [
+                    3,
+                    16
+                ]
+            },
+            {
+                "screen_name": "HockeyGeekGirl",
+                "name": "Susan Ibach",
+                "id": 279153686,
+                "id_str": "279153686",
+                "indices": [
+                    45,
+                    60
+                ]
+            },
+            {
+                "screen_name": "GeekTrainer",
+                "name": "Christopher Harrison",
+                "id": 21051364,
+                "id_str": "21051364",
+                "indices": [
+                    65,
+                    77
+                ]
+            }
+        ],
+        "symbols": []
+    },
+    "favorited": false,
+    "retweeted": false,
+    "filter_level": "low",
+    "lang": "en",
+    "timestamp_ms": "1588451885621"
+}
