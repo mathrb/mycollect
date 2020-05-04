@@ -12,15 +12,8 @@ class FileProcessor():
     """Process a file and execute action
     """
 
-    def __init__(self, input_file, aws_access_key, aws_secret_key):
+    def __init__(self, input_file):
         self._input_file = input_file
-        self._ses_data = {
-            "sender": "Collect <mathrb@gmail.com>",
-            "recipient": "mathrb@gmail.com",
-            "aws_region": "us-west-2",
-            "aws_access_key": aws_access_key,
-            "aws_secret_key": aws_secret_key
-        }
         self._offset_file = ".file_processor_offset"
         self._logger = create_logger()
 
