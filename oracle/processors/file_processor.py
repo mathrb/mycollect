@@ -27,7 +27,6 @@ class FileProcessor():
     def process(self):
         """Process the file and take actions
         """
-        cats = defaultdict(dict)
         oracle_items = []
         last_offset = self.get_offset()
         current_offset = 0
@@ -44,7 +43,7 @@ class FileProcessor():
                 except json.decoder.JSONDecodeError:
                     pass
         self.set_offset(current_offset - 1)
-        return cats
+        return oracle_items
 
     def get_offset(self):
         """Get last offset
