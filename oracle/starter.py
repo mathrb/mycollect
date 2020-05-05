@@ -35,7 +35,7 @@ def execute_processing(processor, outputs):
     """
     result = processor.process()
     for output in outputs:
-        output.output(result)
+        outputs[output].output(result)
 
 async def main_loop():
     """This is the run forever loop definition
