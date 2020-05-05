@@ -2,7 +2,6 @@
 """
 import json
 import os
-from collections import defaultdict
 
 from oracle.logger import create_logger
 from oracle.structures import OracleItem
