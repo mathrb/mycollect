@@ -56,16 +56,17 @@ class EmailOutput():
             categories[oracle_item.category][oracle_item.url].append(
                 oracle_item)
         results = {}
-        for category, url_dict in categories.items():
+        for category, url_dict in sorted(categories.items()):
             category_items = []
-            for url, items in url_dict.items():
+            for url, oracle_items in url_dict.items():
                 item = {
                     "url": url,
-                    "count": len(items),
-                    "text": items[0].text
+                    "count": len(oracle_items),
+                    "text": oracle_items[0].text
                 }
                 category_items.append(item)
-            items = sorted(category_items, key=lambda x: x["count"], reverse=True)
+            items = sorted(
+                category_items, key=lambda x: x["count"], reverse=True)
             results[category] = items[:self._limit_per_category]
         return self._template.render(results=results)
 
@@ -78,17 +79,24 @@ class EmailOutput():
             aws_access_key_id=aws_access_key,
             aws_secret_access_key=aws_secret_key)
 
-if __name__ == "__main__":    
+
+if __name__ == "__main__":
     import yaml
     CONFIGURATION = yaml.safe_load(open("config.yaml", "rb"))
     for processor in CONFIGURATION["outputs"]:
         if processor["name"] == "email":
             email = EmailOutput(**processor["args"])
-            items = []
-            items.append(OracleItem("foo", "my text 1", "http://google.com"))
-            items.append(OracleItem("foo", "my text 2", "http://google.com"))
-            items.append(OracleItem("foo", "my text 3", "http://google.com"))
-            items.append(OracleItem("bar", "my text 1", "http://google.fr"))
-            items.append(OracleItem("bar", "my text 2", "http://google.fr"))
-            items.append(OracleItem("bar", "my text 3", "http://google.fr"))
-            email.output(items)
+            fake_items = []
+            fake_items.append(OracleItem(
+                "foo", "my text 1", "http://google.com"))
+            fake_items.append(OracleItem(
+                "foo", "my text 2", "http://google.com"))
+            fake_items.append(OracleItem(
+                "foo", "my text 3", "http://google.com"))
+            fake_items.append(OracleItem(
+                "bar", "my text 1", "http://google.fr"))
+            fake_items.append(OracleItem(
+                "bar", "my text 2", "http://google.fr"))
+            fake_items.append(OracleItem(
+                "bar", "my text 3", "http://google.fr"))
+            email.output(fake_items)
