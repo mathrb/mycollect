@@ -1,12 +1,15 @@
 collectors:
   - name: twitter
-    type: oracle.collectors.twitter_collector.TwitterCollector
+    type: mycollect.collectors.twitter_collector.TwitterCollector
     args:
       output_file: new_twitter_collect.jsonl
       consumer_key: twitter consumer_key
       consumer_secret: twitter consumer_secret
       access_token: twitter access_token
       access_secret: twitter access_secret
+      languages:
+        - en
+        - fr
       low_priority_url:
         - t.co
         - twitter.com
@@ -28,11 +31,32 @@ collectors:
 
 processors:
   - name: file
-    type: oracle.processors.file_processor.FileProcessor
+    type: mycollect.processors.file_processor.FileProcessor
     args:
       input_file: new_twitter_collect.jsonl
+
+outputs:
+  - name: email
+    type: mycollect.output.email_output.EmailOutput
+    args:
       aws_access_key: aws aws_access_key
       aws_secret_key: aws aws_secret_key
+      aws_region: us-west-2
+      sender: Collect <mathrb@gmail.com>
+      recipients:
+        - mathrb@gmail.com
+      limit_per_category: 3
+      template: | 
+      <html>
+      <head></head>
+      <body>
+          <h1>News Reporting</h1>{% for category, items in results.items() %}
+              <h2>{{ category }}</h2>{% for item in items %}
+                  <p>({{item["count"]}}) {{item["text"]}} <br> <a href='{{item["url"]}}' >{{item["url"]}}</a></p>{% endfor %}
+              <br>{% endfor %}
+      </body>
+      </html>
+
 
 logging:  
   version: 1
@@ -54,9 +78,9 @@ logging:
       json: 
         class: pythonjsonlogger.jsonlogger.JsonFormatter
       plain_colored:
-        (): oracle.logger.plain_colored_formatter
+        (): mycollect.logger.plain_colored_formatter
   loggers:
-    oracle:
+    mycollect:
       handlers: 
         - file
         - console

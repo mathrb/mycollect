@@ -6,7 +6,7 @@ import logging.config
 
 import structlog  # type: ignore
 
-from oracle import __version__
+from mycollect import __version__
 
 
 TIMESTAMPER = structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S")
@@ -27,7 +27,7 @@ def create_logger() -> structlog.BoundLogger:
     Returns:
         BoundLogger -- structlog logger
     """
-    return _bind_basic_info(structlog.get_logger("oracle"))
+    return _bind_basic_info(structlog.get_logger("mycollect"))
 
 def _bind_basic_info(logger):
     return logger.bind(version=__version__)

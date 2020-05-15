@@ -1,13 +1,17 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: Python application
+name: Build and Test mycollect 
 
 on:
   push:
-    branches: [ master develop ]
+    branches: 
+      - master
+      - develop
   pull_request:
-    branches: [ master develop ]
+    branches: 
+      - master
+      - develop
 
 jobs:
   build:
@@ -28,7 +32,8 @@ jobs:
     - name: Lint with pylint
       run: |
         # stop the build if there are Python syntax errors or undefined names
-        pipenv run pylint oracle
-#    - name: Test with pytest
-#      run: |
-#        pytest
+        pipenv run pylint mycollect
+    - name: Test with pytest
+      run: |
+        pipenv run pytest .
+#        pipenv run pytest . --cov=mycollect --cov-fail-under 90

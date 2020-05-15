@@ -1,0 +1,308 @@
+{
+    "created_at": "Sat May 02 21:29:16 +0000 2020",
+    "id": 1256697286895304705,
+    "id_str": "1256697286895304705",
+    "text": "RT @NimbatusGame: We just released the drone editor from Nimbatus as a free standalone game on Steam! Please Retweet \ud83d\ude80\nhttps://t.co/GsaVs0z\u2026",
+    "source": "<a href=\"http://twitter.com/download/android\" rel=\"nofollow\">Twitter for Android</a>",
+    "truncated": false,
+    "in_reply_to_status_id": null,
+    "in_reply_to_status_id_str": null,
+    "in_reply_to_user_id": null,
+    "in_reply_to_user_id_str": null,
+    "in_reply_to_screen_name": null,
+    "user": {
+        "id": 108888710,
+        "id_str": "108888710",
+        "name": "David Stark",
+        "screen_name": "zarkonnen_com",
+        "location": "In your spinal fluid.",
+        "url": "http://www.zarkonnen.com",
+        "description": "Making a Steampunk ship-building RTS called Airships: Conquer the Skies. Always happy to answer questions about any aspect of game development. He/Him",
+        "translator_type": "none",
+        "protected": false,
+        "verified": false,
+        "followers_count": 2393,
+        "friends_count": 1651,
+        "listed_count": 136,
+        "favourites_count": 22947,
+        "statuses_count": 16048,
+        "created_at": "Wed Jan 27 09:35:14 +0000 2010",
+        "utc_offset": null,
+        "time_zone": null,
+        "geo_enabled": false,
+        "lang": null,
+        "contributors_enabled": false,
+        "is_translator": false,
+        "profile_background_color": "131516",
+        "profile_background_image_url": "http://abs.twimg.com/images/themes/theme14/bg.gif",
+        "profile_background_image_url_https": "https://abs.twimg.com/images/themes/theme14/bg.gif",
+        "profile_background_tile": true,
+        "profile_link_color": "B00B1E",
+        "profile_sidebar_border_color": "FFFFFF",
+        "profile_sidebar_fill_color": "EFEFEF",
+        "profile_text_color": "333333",
+        "profile_use_background_image": true,
+        "profile_image_url": "http://pbs.twimg.com/profile_images/1199003719997755394/FX7GfRDb_normal.jpg",
+        "profile_image_url_https": "https://pbs.twimg.com/profile_images/1199003719997755394/FX7GfRDb_normal.jpg",
+        "profile_banner_url": "https://pbs.twimg.com/profile_banners/108888710/1574699837",
+        "default_profile": false,
+        "default_profile_image": false,
+        "following": null,
+        "follow_request_sent": null,
+        "notifications": null
+    },
+    "geo": null,
+    "coordinates": null,
+    "place": null,
+    "contributors": null,
+    "retweeted_status": {
+        "created_at": "Thu Apr 30 16:01:53 +0000 2020",
+        "id": 1255890125680246785,
+        "id_str": "1255890125680246785",
+        "text": "We just released the drone editor from Nimbatus as a free standalone game on Steam! Please Retweet \ud83d\ude80\u2026 https://t.co/B1Ssk0L1Ne",
+        "display_text_range": [
+            0,
+            140
+        ],
+        "source": "<a href=\"https://mobile.twitter.com\" rel=\"nofollow\">Twitter Web App</a>",
+        "truncated": true,
+        "in_reply_to_status_id": null,
+        "in_reply_to_status_id_str": null,
+        "in_reply_to_user_id": null,
+        "in_reply_to_user_id_str": null,
+        "in_reply_to_screen_name": null,
+        "user": {
+            "id": 797412298583396353,
+            "id_str": "797412298583396353",
+            "name": "Nimbatus",
+            "screen_name": "NimbatusGame",
+            "location": null,
+            "url": "http://www.nimbatus.ch",
+            "description": "Nimbatus - The Space Drone Constructor. Build drones out of hundreds of different parts and explore a fully destructible galaxy. Developed by @strayfawnstudio",
+            "translator_type": "none",
+            "protected": false,
+            "verified": false,
+            "followers_count": 3228,
+            "friends_count": 553,
+            "listed_count": 75,
+            "favourites_count": 3649,
+            "statuses_count": 1724,
+            "created_at": "Sat Nov 12 12:14:42 +0000 2016",
+            "utc_offset": null,
+            "time_zone": null,
+            "geo_enabled": false,
+            "lang": null,
+            "contributors_enabled": false,
+            "is_translator": false,
+            "profile_background_color": "F5F8FA",
+            "profile_background_image_url": "",
+            "profile_background_image_url_https": "",
+            "profile_background_tile": false,
+            "profile_link_color": "1DA1F2",
+            "profile_sidebar_border_color": "C0DEED",
+            "profile_sidebar_fill_color": "DDEEF6",
+            "profile_text_color": "333333",
+            "profile_use_background_image": true,
+            "profile_image_url": "http://pbs.twimg.com/profile_images/1040293546740396034/l01MB7qS_normal.jpg",
+            "profile_image_url_https": "https://pbs.twimg.com/profile_images/1040293546740396034/l01MB7qS_normal.jpg",
+            "profile_banner_url": "https://pbs.twimg.com/profile_banners/797412298583396353/1536860138",
+            "default_profile": true,
+            "default_profile_image": false,
+            "following": null,
+            "follow_request_sent": null,
+            "notifications": null
+        },
+        "geo": null,
+        "coordinates": null,
+        "place": null,
+        "contributors": null,
+        "is_quote_status": false,
+        "extended_tweet": {
+            "full_text": "We just released the drone editor from Nimbatus as a free standalone game on Steam! Please Retweet \ud83d\ude80\nhttps://t.co/GsaVs0z4jQ\n\nWin 1 of 3 Steam keys for the full game!\n&gt; Get the Drone Creator\n&gt; Build the most amazing drone\n&gt; Make a GIF\n&gt; Tweet it using #DroneCreator until May 7th https://t.co/A8NkGhUEUo",
+            "display_text_range": [
+                0,
+                291
+            ],
+            "entities": {
+                "hashtags": [
+                    {
+                        "text": "DroneCreator",
+                        "indices": [
+                            264,
+                            277
+                        ]
+                    }
+                ],
+                "urls": [
+                    {
+                        "url": "https://t.co/GsaVs0z4jQ",
+                        "expanded_url": "https://store.steampowered.com/app/1243130/Nimbatus__Drone_Creator/",
+                        "display_url": "store.steampowered.com/app/1243130/Ni\u2026",
+                        "indices": [
+                            101,
+                            124
+                        ]
+                    }
+                ],
+                "user_mentions": [],
+                "symbols": [],
+                "media": [
+                    {
+                        "id": 1255862944459632640,
+                        "id_str": "1255862944459632640",
+                        "indices": [
+                            292,
+                            315
+                        ],
+                        "media_url": "http://pbs.twimg.com/tweet_video_thumb/EW24sbMXsAA3N0O.jpg",
+                        "media_url_https": "https://pbs.twimg.com/tweet_video_thumb/EW24sbMXsAA3N0O.jpg",
+                        "url": "https://t.co/A8NkGhUEUo",
+                        "display_url": "pic.twitter.com/A8NkGhUEUo",
+                        "expanded_url": "https://twitter.com/NimbatusGame/status/1255890125680246785/photo/1",
+                        "type": "animated_gif",
+                        "video_info": {
+                            "aspect_ratio": [
+                                300,
+                                169
+                            ],
+                            "variants": [
+                                {
+                                    "bitrate": 0,
+                                    "content_type": "video/mp4",
+                                    "url": "https://video.twimg.com/tweet_video/EW24sbMXsAA3N0O.mp4"
+                                }
+                            ]
+                        },
+                        "sizes": {
+                            "thumb": {
+                                "w": 150,
+                                "h": 150,
+                                "resize": "crop"
+                            },
+                            "small": {
+                                "w": 600,
+                                "h": 338,
+                                "resize": "fit"
+                            },
+                            "medium": {
+                                "w": 600,
+                                "h": 338,
+                                "resize": "fit"
+                            },
+                            "large": {
+                                "w": 600,
+                                "h": 338,
+                                "resize": "fit"
+                            }
+                        }
+                    }
+                ]
+            },
+            "extended_entities": {
+                "media": [
+                    {
+                        "id": 1255862944459632640,
+                        "id_str": "1255862944459632640",
+                        "indices": [
+                            292,
+                            315
+                        ],
+                        "media_url": "http://pbs.twimg.com/tweet_video_thumb/EW24sbMXsAA3N0O.jpg",
+                        "media_url_https": "https://pbs.twimg.com/tweet_video_thumb/EW24sbMXsAA3N0O.jpg",
+                        "url": "https://t.co/A8NkGhUEUo",
+                        "display_url": "pic.twitter.com/A8NkGhUEUo",
+                        "expanded_url": "https://twitter.com/NimbatusGame/status/1255890125680246785/photo/1",
+                        "type": "animated_gif",
+                        "video_info": {
+                            "aspect_ratio": [
+                                300,
+                                169
+                            ],
+                            "variants": [
+                                {
+                                    "bitrate": 0,
+                                    "content_type": "video/mp4",
+                                    "url": "https://video.twimg.com/tweet_video/EW24sbMXsAA3N0O.mp4"
+                                }
+                            ]
+                        },
+                        "sizes": {
+                            "thumb": {
+                                "w": 150,
+                                "h": 150,
+                                "resize": "crop"
+                            },
+                            "small": {
+                                "w": 600,
+                                "h": 338,
+                                "resize": "fit"
+                            },
+                            "medium": {
+                                "w": 600,
+                                "h": 338,
+                                "resize": "fit"
+                            },
+                            "large": {
+                                "w": 600,
+                                "h": 338,
+                                "resize": "fit"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "quote_count": 3,
+        "reply_count": 2,
+        "retweet_count": 35,
+        "favorite_count": 49,
+        "entities": {
+            "hashtags": [],
+            "urls": [
+                {
+                    "url": "https://t.co/B1Ssk0L1Ne",
+                    "expanded_url": "https://twitter.com/i/web/status/1255890125680246785",
+                    "display_url": "twitter.com/i/web/status/1\u2026",
+                    "indices": [
+                        102,
+                        125
+                    ]
+                }
+            ],
+            "user_mentions": [],
+            "symbols": []
+        },
+        "favorited": false,
+        "retweeted": false,
+        "possibly_sensitive": false,
+        "filter_level": "low",
+        "lang": "en"
+    },
+    "is_quote_status": false,
+    "quote_count": 0,
+    "reply_count": 0,
+    "retweet_count": 0,
+    "favorite_count": 0,
+    "entities": {
+        "hashtags": [],
+        "urls": [],
+        "user_mentions": [
+            {
+                "screen_name": "NimbatusGame",
+                "name": "Nimbatus",
+                "id": 797412298583396353,
+                "id_str": "797412298583396353",
+                "indices": [
+                    3,
+                    16
+                ]
+            }
+        ],
+        "symbols": []
+    },
+    "favorited": false,
+    "retweeted": false,
+    "filter_level": "low",
+    "lang": "en",
+    "timestamp_ms": "1588454956159"
+}

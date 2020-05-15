@@ -1,3 +1,7 @@
+"""Utils for mycollect
+"""
+
+
 def get_class(kls):
     """
     from string, returns the correspondent class

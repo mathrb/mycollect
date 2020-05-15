@@ -1,0 +1,9 @@
+<html>
+    <head></head>
+    <body>
+        <h1>News Reporting</h1>{% for category, items in results.items() %}
+            <h2>{{ category }}</h2>{% for item in items %}
+                <p>({{item["count"]}}) {{item["text"]}} <br> <a href='{{item["url"]}}' >{{item["url"]}}</a></p>{% endfor %}
+            <br>{% endfor %}
+    </body>
+</html>

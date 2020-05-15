@@ -1,3 +1,7 @@
 logs
 config.yaml
 __pycache__
+.vscode
+tests/test_files/new_twitter_collect.jsonl
+.pytest_cache
+.coverage

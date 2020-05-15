@@ -1,14 +1,74 @@
-Collect:
+![Build and Test mycollect](https://github.com/mathrb/mycollect/workflows/Build%20and%20Test%20mycollect/badge.svg?branch=develop)
 
-* configuration file containing 
-  * collectors
-  * output
+# MyCollect
 
-Extract:
+Mycollect monitor social networks to find the information the user is looking for.
 
-* url
-* text (from retweet if retweet)
+## Getting started
 
-Push:
+Requirements:
 
-insert to DB with counter, last seen, time serie ?
+* python >= 3.8
+* [pipenv](https://pipenv.pypa.io/en/latest/)
+
+`pipenv install` will create and install all required modules.
+
+### Configuration
+
+Rename sample_config.yaml to config.yaml
+
+Update the config.yaml with your [twitter api credentials](twitter-api-credentials).
+
+The email sender requires an [AWS account](aws-account), and will use the SES service, which allows 62k emails per month (should be enough).
+
+### Start the collect
+
+`pipenv run python -m mycollect.starter`
+
+## Configuring the collect
+
+You can configure the twitter collect:
+
+* languages: list of languages of the tweets
+* output_file: path to the file that will contains the collected tweets
+* low_priority_url: prioritize URLs in tweets which have a different hostname from the list
+* track: list of terms you want to follow
+
+## Configuring output
+
+### Email
+
+* recipients: the list of emails you want to send an email to
+* sender: the email address that is used as the sender
+* limit_per_category: how much tweets per category will be present in the email
+* template: jinja2 template of the email body
+
+## Annexes
+
+### Twitter api credentials
+
+If you don't have a twitter developer account: [link](https://developer.twitter.com/en/apply)
+
+Create a twitter application: [link](https://developer.twitter.com/en/apps)
+
+From the Keys and tokens tab, you will find the credentials:
+
+* Consumer API keys
+  * api key
+  * api secret key
+* Access token & access token secret
+  * access token
+  * access token secret
+
+### AWS account
+
+I suggest you to read the [AWS documentation](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sign-up-for-aws.html), which contains:
+
+* creation of the account
+* configuring the service
+
+
+Once done, get:
+* aws access key
+* aws secret key
+* aws region of the SES service (it might depend on your location)

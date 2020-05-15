@@ -7,6 +7,11 @@ verify_ssl = true
 pylint = "*"
 colorama = "*"
 tqdm = "*"
+pytest = "*"
+autopep8 = "*"
+pytest-cov = "*"
+pytest-asyncio = "*"
+rope = "*"
 
 [packages]
 tweepy = "*"
@@ -15,6 +20,7 @@ python-json-logger = "*"
 boto3 = "*"
 pyaml = "*"
 schedule = "*"
+Jinja2 = "*"
 
 [requires]
 python_version = "3.8"
