@@ -1,4 +1,4 @@
-![Build and Test mycollect](https://github.com/mathrb/mycollect/workflows/Build%20and%20Test%20mycollect/badge.svg?branch=develop)
+![Build and Test mycollect](https://github.com/mathrb/mycollect/workflows/Build%20and%20Test%20mycollect/badge.svg?branch=master)
 
 # MyCollect
 
