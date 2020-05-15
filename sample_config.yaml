@@ -9,25 +9,14 @@ collectors:
       access_secret: twitter access_secret
       languages:
         - en
-        - fr
       low_priority_url:
         - t.co
         - twitter.com
       track:
-        - python logging
-        - python yaml
-        - python caching
-        - python prod
-        - python best practice
-        - python kafka
-        - python async
-        - gog free
-        - wsl linux
-        - wsl windows
-        - .net core
-        - pvt canada
-        - visa canada
-        - windows terminal
+        - python
+        - nodejs
+        - kubernetes aws
+        - batman and robin
 
 processors:
   - name: file
