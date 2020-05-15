@@ -3,8 +3,8 @@
 import json
 import os
 
-from oracle.logger import create_logger
-from oracle.structures import OracleItem
+from mycollect.logger import create_logger
+from mycollect.structures import MyCollectItem
 
 
 class FileProcessor():
@@ -19,7 +19,7 @@ class FileProcessor():
     def process(self):
         """Process the file and take actions
         """
-        oracle_items = []
+        mycollect_items = []
         last_offset = self.get_offset()
         current_offset = 0
         for line in open(self._input_file):
@@ -30,12 +30,12 @@ class FileProcessor():
                     category = tweet.get("_category")
                     url = tweet.get("_url")
                     if category and url:
-                        oracle_items.append(OracleItem(
+                        mycollect_items.append(MyCollectItem(
                             category=category, text=tweet.get("text", None), url=url))
                 except json.decoder.JSONDecodeError:
                     pass
         self.set_offset(current_offset - 1)
-        return oracle_items
+        return mycollect_items
 
     def get_offset(self):
         """Get last offset

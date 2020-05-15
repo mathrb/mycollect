@@ -7,7 +7,7 @@ from typing import Optional, Iterator
 from tweepy import OAuthHandler, Stream
 from tweepy.streaming import StreamListener
 
-from oracle.logger import create_logger
+from mycollect.logger import create_logger
 
 
 class TwitterCollector(StreamListener):

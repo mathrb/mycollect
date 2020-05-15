@@ -1,6 +1,6 @@
 collectors:
   - name: twitter
-    type: oracle.collectors.twitter_collector.TwitterCollector
+    type: mycollect.collectors.twitter_collector.TwitterCollector
     args:
       output_file: new_twitter_collect.jsonl
       consumer_key: twitter consumer_key
@@ -31,13 +31,13 @@ collectors:
 
 processors:
   - name: file
-    type: oracle.processors.file_processor.FileProcessor
+    type: mycollect.processors.file_processor.FileProcessor
     args:
       input_file: new_twitter_collect.jsonl
 
 outputs:
   - name: email
-    type: oracle.output.email_output.EmailOutput
+    type: mycollect.output.email_output.EmailOutput
     args:
       aws_access_key: aws aws_access_key
       aws_secret_key: aws aws_secret_key
@@ -78,9 +78,9 @@ logging:
       json: 
         class: pythonjsonlogger.jsonlogger.JsonFormatter
       plain_colored:
-        (): oracle.logger.plain_colored_formatter
+        (): mycollect.logger.plain_colored_formatter
   loggers:
-    oracle:
+    mycollect:
       handlers: 
         - file
         - console

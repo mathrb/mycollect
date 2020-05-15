@@ -1,8 +1,8 @@
-"""Defines structures used in oracle
+"""Defines structures used in mycollect
 """
 
 
-class OracleItem():
+class MyCollectItem():
     """Represents an item being shared per sections
     """
 

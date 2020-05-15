@@ -3,7 +3,7 @@
 
 import json
 
-from oracle.collectors.twitter_collector import TwitterCollector
+from mycollect.collectors.twitter_collector import TwitterCollector
 
 
 def test_get_category():

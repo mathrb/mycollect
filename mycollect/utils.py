@@ -1,4 +1,4 @@
-"""Utils for oracle
+"""Utils for mycollect
 """
 
 

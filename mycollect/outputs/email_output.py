@@ -6,8 +6,8 @@ from typing import List
 import boto3
 from jinja2 import Template
 
-from oracle.logger import create_logger
-from oracle.structures import OracleItem
+from mycollect.logger import create_logger
+from mycollect.structures import MyCollectItem
 
 
 class EmailOutput():
@@ -26,7 +26,7 @@ class EmailOutput():
         self._limit_per_category = limit_per_category
         self._logger = create_logger()
 
-    def output(self, results: List[OracleItem]):
+    def output(self, results: List[MyCollectItem]):
         """Send the results through email
 
         Arguments:
@@ -50,19 +50,19 @@ class EmailOutput():
             str -- body
         """
         categories = defaultdict(dict)
-        for oracle_item in results:
-            if oracle_item.url not in categories[oracle_item.category]:
-                categories[oracle_item.category][oracle_item.url] = []
-            categories[oracle_item.category][oracle_item.url].append(
-                oracle_item)
+        for mycollect_item in results:
+            if mycollect_item.url not in categories[mycollect_item.category]:
+                categories[mycollect_item.category][mycollect_item.url] = []
+            categories[mycollect_item.category][mycollect_item.url].append(
+                mycollect_item)
         results = {}
         for category, url_dict in sorted(categories.items()):
             category_items = []
-            for url, oracle_items in url_dict.items():
+            for url, mycollect_items in url_dict.items():
                 item = {
                     "url": url,
-                    "count": len(oracle_items),
-                    "text": oracle_items[0].text
+                    "count": len(mycollect_items),
+                    "text": mycollect_items[0].text
                 }
                 category_items.append(item)
             items = sorted(
@@ -87,16 +87,16 @@ if __name__ == "__main__":
         if processor["name"] == "email":
             email = EmailOutput(**processor["args"])
             fake_items = []
-            fake_items.append(OracleItem(
+            fake_items.append(MyCollectItem(
                 "foo", "my text 1", "http://google.com"))
-            fake_items.append(OracleItem(
+            fake_items.append(MyCollectItem(
                 "foo", "my text 2", "http://google.com"))
-            fake_items.append(OracleItem(
+            fake_items.append(MyCollectItem(
                 "foo", "my text 3", "http://google.com"))
-            fake_items.append(OracleItem(
+            fake_items.append(MyCollectItem(
                 "bar", "my text 1", "http://google.fr"))
-            fake_items.append(OracleItem(
+            fake_items.append(MyCollectItem(
                 "bar", "my text 2", "http://google.fr"))
-            fake_items.append(OracleItem(
+            fake_items.append(MyCollectItem(
                 "bar", "my text 3", "http://google.fr"))
             email.output(fake_items)

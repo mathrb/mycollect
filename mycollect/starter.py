@@ -1,4 +1,4 @@
-"""Starter module for oracle
+"""Starter module for mycollect
 """
 
 import asyncio
@@ -6,8 +6,8 @@ import asyncio
 import schedule
 import yaml
 
-from oracle.logger import configure, create_logger
-from oracle.utils import get_class
+from mycollect.logger import configure, create_logger
+from mycollect.utils import get_class
 
 def load_types(items):
     """Loads the types defined in configuration section

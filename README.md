@@ -1,4 +1,4 @@
-![Build and Test Oracle](https://github.com/mathrb/mycollect/workflows/Build%20and%20Test%20Oracle/badge.svg?branch=develop)
+![Build and Test mycollect](https://github.com/mathrb/mycollect/workflows/Build%20and%20Test%20mycollect/badge.svg?branch=develop)
 
 # MyCollect
 
@@ -23,7 +23,7 @@ The email sender requires an [AWS account](aws-account), and will use the SES se
 
 ### Start the collect
 
-`pipenv run python -m oracle.starter`
+`pipenv run python -m mycollect.starter`
 
 ## Configuring the collect
 
