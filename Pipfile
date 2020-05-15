@@ -11,6 +11,7 @@ pytest = "*"
 autopep8 = "*"
 pytest-cov = "*"
 pytest-asyncio = "*"
+rope = "*"
 
 [packages]
 tweepy = "*"
