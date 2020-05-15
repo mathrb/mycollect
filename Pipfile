@@ -9,6 +9,8 @@ colorama = "*"
 tqdm = "*"
 pytest = "*"
 autopep8 = "*"
+pytest-cov = "*"
+pytest-asyncio = "*"
 
 [packages]
 tweepy = "*"
