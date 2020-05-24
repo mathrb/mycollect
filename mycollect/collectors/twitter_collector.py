@@ -32,6 +32,14 @@ class TwitterCollector(StreamListener):
         self._twitter_stream.filter(
             track=self._track, languages=self._languages, is_async=True)
 
+    def check_status(self):
+        """Check the status of the collect
+        """
+        if not self._twitter_stream.running:
+            self._logger.info("twitter collect not running, restarting")
+            self.stop()
+            self.collect()
+
     def stop(self):
         """Stops the streaming
         """

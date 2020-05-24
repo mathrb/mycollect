@@ -61,6 +61,8 @@ async def main_loop():
         while True:
             schedule.run_pending()
             await asyncio.sleep(1)
+            for local_connector in collectors:
+                collectors[local_connector].check_status()
     except KeyboardInterrupt:
         for local_collector in collectors:
             logger.info("stopping collector", collector=local_collector)
