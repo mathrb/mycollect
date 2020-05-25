@@ -78,25 +78,3 @@ class EmailOutput():
             region_name=aws_region,
             aws_access_key_id=aws_access_key,
             aws_secret_access_key=aws_secret_key)
-
-
-if __name__ == "__main__":
-    import yaml
-    CONFIGURATION = yaml.safe_load(open("config.yaml", "rb"))
-    for processor in CONFIGURATION["outputs"]:
-        if processor["name"] == "email":
-            email = EmailOutput(**processor["args"])
-            fake_items = []
-            fake_items.append(MyCollectItem(
-                "foo", "my text 1", "http://google.com"))
-            fake_items.append(MyCollectItem(
-                "foo", "my text 2", "http://google.com"))
-            fake_items.append(MyCollectItem(
-                "foo", "my text 3", "http://google.com"))
-            fake_items.append(MyCollectItem(
-                "bar", "my text 1", "http://google.fr"))
-            fake_items.append(MyCollectItem(
-                "bar", "my text 2", "http://google.fr"))
-            fake_items.append(MyCollectItem(
-                "bar", "my text 3", "http://google.fr"))
-            email.output(fake_items)
