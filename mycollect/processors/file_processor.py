@@ -32,6 +32,8 @@ class FileProcessor():
                     if category and url:
                         mycollect_items.append(MyCollectItem(
                             category=category, text=tweet.get("text", None), url=url))
+                    else:
+                        print(tweet["id"])
                 except json.decoder.JSONDecodeError:
                     pass
         self.set_offset(current_offset - 1)
@@ -59,12 +61,3 @@ class FileProcessor():
         """
         with open(self._offset_file, "w") as file_output:
             file_output.write(str(offset))
-
-
-if __name__ == "__main__":
-    import yaml
-    CONFIGURATION = yaml.safe_load(open("config.yaml", "rb"))
-    for processor in CONFIGURATION["processors"]:
-        if processor["name"] == "file":
-            fp = FileProcessor(**processor["args"])
-            fp.process()
