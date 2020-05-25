@@ -5,3 +5,4 @@ __pycache__
 tests/test_files/new_twitter_collect.jsonl
 .pytest_cache
 .coverage
+htmlcov
