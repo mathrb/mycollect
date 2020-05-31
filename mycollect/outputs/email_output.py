@@ -14,7 +14,7 @@ class EmailOutput():
     """Send results to email recipients
     """
 
-    def __init__(self, aws_access_key, aws_secret_key, aws_region,
+    def __init__(self, aws_access_key, aws_secret_key, aws_region,  # pylint:disable=too-many-arguments
                  template, recipients, sender, limit_per_category=3):
         if aws_region:
             self.set_auth(aws_access_key, aws_secret_key, aws_region)
