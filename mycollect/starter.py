@@ -9,6 +9,7 @@ import yaml
 from mycollect.logger import configure, create_logger
 from mycollect.utils import get_class
 
+
 def load_types(items):
     """Loads the types defined in configuration section
 
@@ -26,6 +27,7 @@ def load_types(items):
         collection[item["name"]] = item_instance
     return collection
 
+
 def execute_processing(processor, outputs):
     """Starts processing the data
 
@@ -36,6 +38,7 @@ def execute_processing(processor, outputs):
     result = processor.process()
     for output in outputs:
         outputs[output].output(result)
+
 
 async def main_loop():
     """This is the run forever loop definition
@@ -54,8 +57,14 @@ async def main_loop():
         logger.info("starting collector", collector=collector)
         collectors[collector].collect()
 
+    execution_time = "02:00"
+    processing = configuration.get("processing", None)
+    if processing:
+        execution_time = processing.get("execution_time", "02:00")
+
     for processor in processors:
-        schedule.every().day.at("02:00").do(execute_processing, processors[processor], outputs)
+        schedule.every().day.at(execution_time).do(
+            execute_processing, processors[processor], outputs)
 
     try:
         while True:
