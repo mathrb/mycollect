@@ -11,7 +11,7 @@ from unshortenit import UnshortenIt
 from mycollect.logger import create_logger
 
 
-class TwitterCollector(StreamListener):
+class TwitterCollector(StreamListener):  # pylint:disable=too-many-instance-attribute
     """Twitter collector, based on Tweepy streaming
     """
 
