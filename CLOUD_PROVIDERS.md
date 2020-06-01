@@ -27,4 +27,21 @@ Fewer options than AWS
 
 * Azure Cosmos DB: 400 RU/s and 5GB per month
 
-* Azure Notification Hubs: 1,000,000 
+* Azure Notification Hubs: 1,000,000
+
+## GCP
+
+This provider provides a small VM to run code
+
+[GCP Services](https://cloud.google.com/free/)
+
+* Cloud run: 2,000,000 per month (A fully managed environment to run stateless containers.)
+
+* Firestore: 1GB, 50,000 reads, 20,000 writes, 20,000 deletes per day
+
+* Compute Engine: 1 F1-micro instance per month (0.2 VCPU, 600mo ram)
+
+* Pub/Sub: 10 GB of messages per month
+
+* Cloud functions: 2,000,000 invocations per month
+
