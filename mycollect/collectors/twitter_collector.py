@@ -9,9 +9,10 @@ from tweepy.streaming import StreamListener
 from unshortenit import UnshortenIt
 
 from mycollect.logger import create_logger
+from mycollect.collectors import Collector
 
 
-class TwitterCollector(StreamListener):  # pylint:disable=too-many-instance-attributes
+class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-instance-attributes
     """Twitter collector, based on Tweepy streaming
     """
 
@@ -28,7 +29,7 @@ class TwitterCollector(StreamListener):  # pylint:disable=too-many-instance-attr
         self._twitter_stream = Stream(self._auth, self)
         self._unshortener = UnshortenIt()
 
-    def collect(self):
+    def start(self):
         """Collect data from twitter
         """
         self._twitter_stream.filter(
@@ -40,7 +41,7 @@ class TwitterCollector(StreamListener):  # pylint:disable=too-many-instance-attr
         if not self._twitter_stream.running:
             self._logger.info("twitter collect not running, restarting")
             self.stop()
-            self.collect()
+            self.start()
 
     def stop(self):
         """Stops the streaming

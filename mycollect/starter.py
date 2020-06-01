@@ -2,12 +2,14 @@
 """
 
 import asyncio
+from typing import List
 
 import schedule
 import yaml
 
 from mycollect.logger import configure, create_logger
 from mycollect.utils import get_class
+from mycollect.collectors import Collector
 
 
 def load_types(items):
@@ -49,13 +51,13 @@ async def main_loop():
     configure(configuration["logging"])
     logger = create_logger()
 
-    collectors = load_types(configuration["collectors"])
+    collectors: List[Collector] = load_types(configuration["collectors"])
     processors = load_types(configuration["processors"])
     outputs = load_types(configuration["outputs"])
 
     for collector in collectors:
         logger.info("starting collector", collector=collector)
-        collectors[collector].collect()
+        collectors[collector].start()
 
     execution_time = "02:00"
     processing = configuration.get("processing", None)
