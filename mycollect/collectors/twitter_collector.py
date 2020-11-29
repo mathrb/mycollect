@@ -18,7 +18,7 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
 
     def __init__(self, consumer_key, consumer_secret,  # pylint:disable=too-many-arguments
                  access_token, access_secret, languages, low_priority_url, track):
-        super(TwitterCollector, self).__init__()
+        super().__init__()
         self._logger = create_logger().bind(collector='twitter')
         self._track = track
         self._languages = languages
