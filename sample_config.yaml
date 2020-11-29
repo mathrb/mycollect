@@ -18,6 +18,11 @@ collectors:
         - kubernetes aws
         - batman and robin
 
+data_manager:
+  type: mycollect.data_manager.file_data_manager
+  args:
+    folder: storage
+
 processing:
   execution_time: "18:00"
 
