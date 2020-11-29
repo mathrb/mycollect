@@ -32,7 +32,7 @@ def create_logger() -> structlog.BoundLogger:
 def _bind_basic_info(logger):
     return logger.bind(version=__version__)
 
-def configure(configuration: Dict) -> None:
+def configure_logger(configuration: Dict) -> None:
     """Configure the logging library based on the configuration
 
     Arguments:

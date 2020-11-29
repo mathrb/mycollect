@@ -7,7 +7,7 @@ from typing import List
 import schedule
 import yaml
 
-from mycollect.logger import configure, create_logger
+from mycollect.logger import configure_logger, create_logger
 from mycollect.utils import get_class
 from mycollect.collectors import Collector
 
@@ -48,7 +48,7 @@ async def main_loop():
 
     configuration = yaml.safe_load(open("config.yaml", "rb"))
 
-    configure(configuration["logging"])
+    configure_logger(configuration["logging"])
     logger = create_logger()
 
     collectors: List[Collector] = load_types(configuration["collectors"])
