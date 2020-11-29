@@ -56,13 +56,12 @@ async def main_loop():
 
     collectors: List[Collector] = load_types(configuration["collectors"])
     data_manager: DataManager = load_types([configuration["data_manager"]])["file data manager"]
-    processors = load_types(configuration["processors"], {"data_manager" = data_manager})
+    processors = load_types(configuration["processors"], {"data_manager" : data_manager})
     outputs = load_types(configuration["outputs"])
 
     for collector in collectors:
         logger.info("starting collector", collector=collector)
-        collectors[collector].set_callback(
-            lambda provider, item: data_manager.store_raw_data(provider, item))
+        collectors[collector].set_callback(data_manager.store_raw_data)
         collectors[collector].start()
 
     execution_time = "02:00"

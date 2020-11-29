@@ -1,13 +1,12 @@
 """Process an input file
 """
+import datetime
 import json
 import os
 
+from mycollect.data_manager import DataManager
 from mycollect.logger import create_logger
 from mycollect.structures import MyCollectItem
-from mycollect.data_manager import DataManager
-
-import datetime
 
 
 class FileProcessor():

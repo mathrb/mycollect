@@ -7,8 +7,7 @@ class Collector(metaclass=abc.ABCMeta):
     """Base collector class
     """
 
-    def __init(self):
-        self._collector_name = None
+    def __init__(self):
         self._callback = None
 
 

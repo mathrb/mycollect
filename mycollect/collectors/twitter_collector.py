@@ -10,7 +10,6 @@ from unshortenit import UnshortenIt
 
 from mycollect.logger import create_logger
 from mycollect.collectors import Collector
-from mycollect.data_manager import DataManager
 
 
 class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-instance-attributes
