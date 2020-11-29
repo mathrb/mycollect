@@ -10,9 +10,10 @@ import yaml
 from mycollect.logger import configure_logger, create_logger
 from mycollect.utils import get_class
 from mycollect.collectors import Collector
+from mycollect.data_manager import DataManager
 
 
-def load_types(items):
+def load_types(items, extra_args: dict = None):
     """Loads the types defined in configuration section
 
     Arguments:
@@ -25,6 +26,8 @@ def load_types(items):
     for item in items:
         item_class = get_class(item["type"])
         args = item.get("args", {})
+        if extra_args:
+            args.update(extra_args)
         item_instance = item_class(**args)
         collection[item["name"]] = item_instance
     return collection
@@ -52,11 +55,14 @@ async def main_loop():
     logger = create_logger()
 
     collectors: List[Collector] = load_types(configuration["collectors"])
-    processors = load_types(configuration["processors"])
+    data_manager: DataManager = load_types([configuration["data_manager"]])["file data manager"]
+    processors = load_types(configuration["processors"], {"data_manager" = data_manager})
     outputs = load_types(configuration["outputs"])
 
     for collector in collectors:
         logger.info("starting collector", collector=collector)
+        collectors[collector].set_callback(
+            lambda provider, item: data_manager.store_raw_data(provider, item))
         collectors[collector].start()
 
     execution_time = "02:00"

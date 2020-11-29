@@ -10,20 +10,20 @@ from unshortenit import UnshortenIt
 
 from mycollect.logger import create_logger
 from mycollect.collectors import Collector
+from mycollect.data_manager import DataManager
 
 
 class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-instance-attributes
     """Twitter collector, based on Tweepy streaming
     """
 
-    def __init__(self, output_file, consumer_key, consumer_secret,  # pylint:disable=too-many-arguments
+    def __init__(self, consumer_key, consumer_secret,  # pylint:disable=too-many-arguments
                  access_token, access_secret, languages, low_priority_url, track):
         super(TwitterCollector, self).__init__()
         self._logger = create_logger().bind(collector='twitter')
         self._track = track
         self._languages = languages
         self._low_priority_url = low_priority_url
-        self._output_file = output_file
         self._auth = OAuthHandler(consumer_key, consumer_secret)
         self._auth.set_access_token(access_token, access_secret)
         self._twitter_stream = Stream(self._auth, self)
@@ -68,8 +68,7 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
                     self._logger.exception(str(err))
                     raise
             loaded_tweet["_url"] = url
-            with open(self._output_file, 'a') as output_file:
-                output_file.write(json.dumps(loaded_tweet) + "\n")
+            self.emit("twitter", loaded_tweet)
         except BaseException as err:  # pylint:disable=broad-except
             self._logger.error("on_data unexpected error: {}".format(err))
             self._logger.exception(err)

@@ -17,8 +17,7 @@ class FileDataManager(DataManager):
     """
 
     def __init__(self, folder: str):
-        if not os.path.exists(folder):
-            raise FileNotFoundError('{} does not exists'.format(folder))
+        os.makedirs(folder, exist_ok=True)
         self._folder = folder
 
     def store_raw_data(self, provider: str, data: Any) -> None:
@@ -39,11 +38,12 @@ class FileDataManager(DataManager):
         if os.path.exists(provider_path):
             current_date = datetime.datetime.fromtimestamp(timestamp)
             while current_date.date() <= datetime.datetime.now().date():
-                file_path = self._get_file_path(provider, timestamp)
-                for line in open(file_path, encoding='utf-8'):
-                    item = json.loads(line)
-                    if item["timestamp"] >= timestamp:
-                        yield item["data"]
+                file_path = self._get_file_path(provider, round(current_date.timestamp()))
+                if os.path.exists(file_path):
+                    for line in open(file_path, encoding='utf-8'):
+                        item = json.loads(line)
+                        if item["timestamp"] >= timestamp:
+                            yield item["data"]
                 current_date += datetime.timedelta(days=1)
 
     def _get_file_path(self, provider, timestamp: int):

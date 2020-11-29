@@ -5,38 +5,38 @@ import os
 
 from mycollect.logger import create_logger
 from mycollect.structures import MyCollectItem
+from mycollect.data_manager import DataManager
+
+import datetime
 
 
 class FileProcessor():
     """Process a file and execute action
     """
 
-    def __init__(self, input_file):
-        self._input_file = input_file
+    def __init__(self, data_manager: DataManager):
         self._offset_file = ".file_processor_offset"
         self._logger = create_logger()
+        self._data_manager = data_manager
 
     def process(self):
         """Process the file and take actions
         """
         mycollect_items = []
         last_offset = self.get_offset()
-        current_offset = 0
-        for line in open(self._input_file):
-            current_offset += 1
-            if line.strip() != '' and current_offset > last_offset:
-                try:
-                    tweet = json.loads(line)
-                    category = tweet.get("_category")
-                    url = tweet.get("_url")
-                    if category and url:
-                        mycollect_items.append(MyCollectItem(
-                            category=category, text=tweet.get("text", None), url=url))
-                    else:
-                        print(tweet["id"])
-                except json.decoder.JSONDecodeError:
-                    pass
-        self.set_offset(current_offset - 1)
+        current_offset = round(datetime.datetime.now().timestamp())
+        for tweet in self._data_manager.read_raw_data("twitter", last_offset):
+            try:
+                category = tweet.get("_category")
+                url = tweet.get("_url")
+                if category and url:
+                    mycollect_items.append(MyCollectItem(
+                        category=category, text=tweet.get("text", None), url=url))
+                else:
+                    print(tweet["id"])
+            except json.decoder.JSONDecodeError:
+                pass
+        self.set_offset(current_offset)
         return mycollect_items
 
     def get_offset(self):
