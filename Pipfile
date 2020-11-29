@@ -23,6 +23,7 @@ schedule = "*"
 Jinja2 = "*"
 unshortenit = "*"
 cython = "*"
+pytest-asyncio = "*"
 
 [requires]
 python_version = "3.8"
