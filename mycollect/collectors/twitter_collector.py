@@ -18,7 +18,8 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
 
     def __init__(self, consumer_key, consumer_secret,  # pylint:disable=too-many-arguments
                  access_token, access_secret, languages, low_priority_url, track):
-        super().__init__()
+        Collector.__init__(self, "twitter")
+        StreamListener.__init__(self)
         self._logger = create_logger().bind(collector='twitter')
         self._track = track
         self._languages = languages
@@ -66,7 +67,7 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
                     self._logger.exception(str(err))
                     raise
             loaded_tweet["_url"] = url
-            self.emit("twitter", loaded_tweet)
+            self.emit(loaded_tweet)
         except BaseException as err:  # pylint:disable=broad-except
             self._logger.error("on_data unexpected error: {}".format(err))
             self._logger.exception(err)

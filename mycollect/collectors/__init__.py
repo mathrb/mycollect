@@ -3,13 +3,16 @@ Collector module
 """
 import abc
 
+from mycollect.structures import MyCollectItem
+
+
 class Collector(metaclass=abc.ABCMeta):
     """Base collector class
     """
 
-    def __init__(self):
+    def __init__(self, connector_name):
         self._callback = None
-
+        self._connector_name = connector_name
 
     @abc.abstractmethod
     def start(self) -> None:
@@ -26,11 +29,11 @@ class Collector(metaclass=abc.ABCMeta):
         """Stops collecting items
         """
 
-    def emit(self, collector_name, item) -> None:
+    def emit(self, item: MyCollectItem) -> None:
         """
             Emit a new item
         """
-        self._callback(collector_name, item)
+        self._callback(self._connector_name, item)
 
     def set_callback(self, callback) -> None:
         """
