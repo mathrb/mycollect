@@ -6,11 +6,12 @@ class MyCollectItem():
     """Represents an item being shared per sections
     """
 
-    def __init__(self, category: str = None, text: str = None, url: str = None):
+    def __init__(self, provider: str = None, category: str = None, text: str = None, url: str = None):
         self._category = category
         self._text = text
         self._url = url
-        self._extended_data = None
+        self._provider = provider
+        self._extra = {}
 
     @property
     def category(self):
@@ -43,11 +44,34 @@ class MyCollectItem():
         self._url = value
 
     @property
-    def extended_data(self):
+    def extra(self) -> dict:
         """Returns the extended data of this item
         """
-        return self._extended_data
+        return self._extra
 
-    @extended_data.setter
-    def extended_data(self, value):
-        self._extended_data = value
+    @property
+    def provider(self) -> str:
+        """Gets the provider of this item
+        """
+        return self._provider
+
+    def to_dict(self):
+        return {
+            "category": self._category,
+            "provider": self._provider,
+            "text": self._text,
+            "url": self._url,
+            "extra": self._extra
+        }
+
+    @staticmethod
+    def from_dict(item: dict):
+        my_collect_item = MyCollectItem(
+            provider=item["provider"],
+            category=item["category"],
+            text=item["text"],
+            url=item["url"]            
+        )
+        if "extra" in item:
+            my_collect_item.extra.update(item["extra"])
+        return my_collect_item

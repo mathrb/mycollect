@@ -1,15 +1,15 @@
 """Twitter collection implementation
 """
 import json
+from typing import Iterator, Optional
 from urllib.parse import urlparse
-from typing import Optional, Iterator
 
+from mycollect.collectors import Collector
+from mycollect.logger import create_logger
+from mycollect.structures import MyCollectItem
+from mycollect.utils import unshorten_url
 from tweepy import OAuthHandler, Stream
 from tweepy.streaming import StreamListener
-from mycollect.utils import unshorten_url
-
-from mycollect.logger import create_logger
-from mycollect.collectors import Collector
 
 
 class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-instance-attributes
@@ -51,8 +51,6 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
         try:
             loaded_tweet = json.loads(raw_data)
             category = self.get_category(loaded_tweet)
-            if category is not None:
-                loaded_tweet["_category"] = category
             retweet = loaded_tweet.get("retweeted_status", None)
             if retweet is not None:
                 url = self.get_url_from_tweet(loaded_tweet["retweeted_status"])
@@ -66,8 +64,14 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
                 except Exception as err:
                     self._logger.exception(str(err))
                     raise
-            loaded_tweet["_url"] = url
-            self.emit(loaded_tweet)
+
+            if url and category:
+                item = MyCollectItem(provider=self._connector_name,
+                                     category=category,
+                                     text=loaded_tweet.get("text", None),
+                                     url=url)
+                item.extra["tweet"] = loaded_tweet
+                self.emit(item)
         except BaseException as err:  # pylint:disable=broad-except
             self._logger.error("on_data unexpected error: {}".format(err))
             self._logger.exception(err)

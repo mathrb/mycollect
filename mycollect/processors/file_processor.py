@@ -4,7 +4,7 @@ import datetime
 import json
 import os
 
-from mycollect.data_manager import DataManager
+from mycollect.storage import Storage
 from mycollect.logger import create_logger
 from mycollect.structures import MyCollectItem
 
@@ -13,7 +13,7 @@ class FileProcessor():
     """Process a file and execute action
     """
 
-    def __init__(self, data_manager: DataManager):
+    def __init__(self, data_manager: Storage):
         self._offset_file = ".file_processor_offset"
         self._logger = create_logger()
         self._data_manager = data_manager
@@ -24,7 +24,7 @@ class FileProcessor():
         mycollect_items = []
         last_offset = self.get_offset()
         current_offset = round(datetime.datetime.now().timestamp())
-        for tweet in self._data_manager.read_raw_data("twitter", last_offset):
+        for tweet in self._data_manager.fetch_items(last_offset):
             try:
                 category = tweet.get("_category")
                 url = tweet.get("_url")
