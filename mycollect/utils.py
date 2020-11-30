@@ -16,6 +16,9 @@ def get_class(kls):
     return module
 
 def unshorten_url(url):
+    """
+        Unshorten the url
+    """
     response = requests.get(url)
     new_url = url
     for item in response.history:
