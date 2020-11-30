@@ -6,7 +6,7 @@ from typing import Optional, Iterator
 
 from tweepy import OAuthHandler, Stream
 from tweepy.streaming import StreamListener
-from unshortenit import UnshortenIt
+from mycollect.utils import unshorten_url
 
 from mycollect.logger import create_logger
 from mycollect.collectors import Collector
@@ -26,7 +26,6 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
         self._auth = OAuthHandler(consumer_key, consumer_secret)
         self._auth.set_access_token(access_token, access_secret)
         self._twitter_stream = Stream(self._auth, self)
-        self._unshortener = UnshortenIt()
 
     def start(self):
         """Collect data from twitter
@@ -62,7 +61,7 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
                 url = self.get_url_from_tweet(loaded_tweet)
             if url:
                 try:
-                    url = self._unshortener.unshorten(url)
+                    url = unshorten_url(url)
                 except Exception as err:
                     self._logger.exception(str(err))
                     raise
