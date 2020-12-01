@@ -2,11 +2,10 @@ collectors:
   - name: twitter
     type: mycollect.collectors.twitter_collector.TwitterCollector
     args:
-      output_file: new_twitter_collect.jsonl
-      consumer_key: twitter consumer_key
-      consumer_secret: twitter consumer_secret
-      access_token: twitter access_token
-      access_secret: twitter access_secret
+      consumer_key: 
+      consumer_secret: 
+      access_token: 
+      access_secret: 
       languages:
         - en
       low_priority_url:
@@ -18,27 +17,27 @@ collectors:
         - kubernetes aws
         - batman and robin
 
-data_manager:
-  type: mycollect.data_manager.file_data_manager
+storage:
+  type: mycollect.storage.file_storage.FileStorage
   args:
     folder: storage
 
 processing:
   execution_time: "18:00"
 
-processors:
-  - name: file
-    type: mycollect.processors.file_processor.FileProcessor
+aggregators:
+  - name: dummy aggregator
+    type: mycollect.aggregators.dummy_aggregator.DummyAggregator
     args:
-      input_file: new_twitter_collect.jsonl
+      top_articles: 3
 
 outputs:
   - name: email
-    type: mycollect.output.email_output.EmailOutput
+    type: mycollect.outputs.email_output.EmailOutput
     args:
-      aws_access_key: aws aws_access_key
-      aws_secret_key: aws aws_secret_key
-      aws_region: us-west-2
+      aws_access_key: 
+      aws_secret_key: 
+      aws_region: 
       sender: Collect <mathrb@gmail.com>
       recipients:
         - mathrb@gmail.com

@@ -4,6 +4,7 @@
 import asyncio
 from typing import List
 import datetime
+import argparse
 
 import schedule
 import yaml
@@ -29,13 +30,26 @@ def load_types(items, extra_args: dict = None):
     """
     collection = {}
     for item in items:
-        item_class = get_class(item["type"])
-        args = item.get("args", {})
-        if extra_args:
-            args.update(extra_args)
-        item_instance = item_class(**args)
-        collection[item["name"]] = item_instance
+        collection[item["name"]] = load_type(item, extra_args=extra_args)
     return collection
+
+
+def load_type(item, extra_args: dict = None):
+    """Loads the specified item defined by configuration
+
+    Args:
+        item (dict): configuration e
+        extra_args (dict, optional): extra arguments for the instanciation.
+            Defaults to None.
+
+    Returns:
+        [type]: An instance of type defined in the item
+    """
+    item_class = get_class(item["type"])
+    args = item.get("args", {})
+    if extra_args:
+        args.update(extra_args)
+    return item_class(**args)
 
 
 def execute_processing(processor, outputs):
@@ -49,6 +63,7 @@ def execute_processing(processor, outputs):
     for output in outputs:
         outputs[output].output(result)
 
+
 def report(storage: Storage, aggregators: List[Aggregator], outputs: List[Output]):
     """Report
 
@@ -57,26 +72,30 @@ def report(storage: Storage, aggregators: List[Aggregator], outputs: List[Output
         aggregators (List[Aggregator]): aggregators
         outputs (List[Output]): outputs
     """
-    timestamp = round(datetime.datetime.now().timestamp())
+    yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
+    timestamp = round(yesterday.timestamp())
     aggregates = []
     for aggregator in aggregators:
-        aggregates.append(aggregator.aggregates(storage.fetch_items(timestamp)))
+        aggregates.append(aggregator.aggregates(
+            storage.fetch_items(timestamp)))
     for output in outputs:
         for agg in aggregates:
             output.render(agg)
 
-async def main_loop():
+
+async def main_loop(config):
     """This is the run forever loop definition
     """
 
-    configuration = yaml.safe_load(open("config.yaml", "rb"))
+    configuration = yaml.safe_load(open(config, "rb"))
 
     configure_logger(configuration["logging"])
     logger = create_logger()
 
     collectors: List[Collector] = load_types(configuration["collectors"])
-    storage: Storage = load_types([configuration["storage"]]).pop()
-    processors = load_types(configuration["processors"])
+    storage: Storage = load_type(configuration["storage"])
+    processors = load_types(
+        configuration["processors"]) if "processors" in configuration else []
     aggregators = load_types(configuration["aggregators"])
     outputs = load_types(configuration["outputs"])
 
@@ -112,4 +131,8 @@ async def main_loop():
         logger.info("shutdown gracefully")
 
 if __name__ == '__main__':
-    asyncio.run(main_loop())
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-c", "--configuration",
+                        help="path to configuration file", default="config.yml")
+    sys_args = parser.parse_args()
+    asyncio.run(main_loop(config=sys_args.configuration))

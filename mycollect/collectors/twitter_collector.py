@@ -66,7 +66,7 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
                     raise
 
             if url and category:
-                item = MyCollectItem(provider=self._connector_name,
+                item = MyCollectItem(provider="twitter",
                                      category=category,
                                      text=loaded_tweet.get("text", None),
                                      url=url)
