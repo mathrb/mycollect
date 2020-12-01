@@ -5,7 +5,6 @@
 import datetime
 import json
 import os
-from typing import Any
 
 from mycollect.storage import Storage
 from mycollect.structures import MyCollectItem

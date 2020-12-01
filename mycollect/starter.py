@@ -3,6 +3,7 @@
 
 import asyncio
 from typing import List
+import datetime
 
 import schedule
 import yaml
@@ -10,7 +11,11 @@ import yaml
 from mycollect.logger import configure_logger, create_logger
 from mycollect.utils import get_class
 from mycollect.collectors import Collector
-from mycollect.data_manager import DataManager
+from mycollect.storage import Storage
+from mycollect.processors import PipelineProcessor
+from mycollect.processors.exit_processor import ExitProcessor
+from mycollect.aggregators import Aggregator
+from mycollect.outputs import Output
 
 
 def load_types(items, extra_args: dict = None):
@@ -44,6 +49,21 @@ def execute_processing(processor, outputs):
     for output in outputs:
         outputs[output].output(result)
 
+def report(storage: Storage, aggregators: List[Aggregator], outputs: List[Output]):
+    """Report
+
+    Args:
+        storage (Storage): storage
+        aggregators (List[Aggregator]): aggregators
+        outputs (List[Output]): outputs
+    """
+    timestamp = round(datetime.datetime.now().timestamp())
+    aggregates = []
+    for aggregator in aggregators:
+        aggregates.append(aggregator.aggregates(storage.fetch_items(timestamp)))
+    for output in outputs:
+        for agg in aggregates:
+            output.render(agg)
 
 async def main_loop():
     """This is the run forever loop definition
@@ -55,13 +75,19 @@ async def main_loop():
     logger = create_logger()
 
     collectors: List[Collector] = load_types(configuration["collectors"])
-    data_manager: DataManager = load_types([configuration["data_manager"]])["file data manager"]
-    processors = load_types(configuration["processors"], {"data_manager" : data_manager})
+    storage: Storage = load_types([configuration["storage"]]).pop()
+    processors = load_types(configuration["processors"])
+    aggregators = load_types(configuration["aggregators"])
     outputs = load_types(configuration["outputs"])
+
+    pipeline = PipelineProcessor()
+    for processor in processors:
+        pipeline.append_processor(processor)
+    pipeline.append_processor(ExitProcessor(storage))
 
     for collector in collectors:
         logger.info("starting collector", collector=collector)
-        collectors[collector].set_callback(data_manager.store_raw_data)
+        collectors[collector].set_callback(pipeline.update_item)
         collectors[collector].start()
 
     execution_time = "02:00"
@@ -71,7 +97,7 @@ async def main_loop():
 
     for processor in processors:
         schedule.every().day.at(execution_time).do(
-            execute_processing, processors[processor], outputs)
+            report, storage, aggregators.values(), outputs.values())
 
     try:
         while True:

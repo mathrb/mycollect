@@ -4,12 +4,13 @@ import json
 from typing import Iterator, Optional
 from urllib.parse import urlparse
 
+from tweepy import OAuthHandler, Stream
+from tweepy.streaming import StreamListener
+
 from mycollect.collectors import Collector
 from mycollect.logger import create_logger
 from mycollect.structures import MyCollectItem
 from mycollect.utils import unshorten_url
-from tweepy import OAuthHandler, Stream
-from tweepy.streaming import StreamListener
 
 
 class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-instance-attributes
@@ -18,8 +19,7 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
 
     def __init__(self, consumer_key, consumer_secret,  # pylint:disable=too-many-arguments
                  access_token, access_secret, languages, low_priority_url, track):
-        Collector.__init__(self, "twitter")
-        StreamListener.__init__(self)
+        super().__init__()
         self._logger = create_logger().bind(collector='twitter')
         self._track = track
         self._languages = languages

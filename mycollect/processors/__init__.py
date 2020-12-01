@@ -5,7 +5,9 @@ import abc
 from typing import List
 from mycollect.structures import MyCollectItem
 
-class Processor(metaclass=abc.ABCMeta):
+class Processor(metaclass=abc.ABCMeta): #pylint:disable=R0903
+    """Transforms a MyCollectItem
+    """
 
     @abc.abstractmethod
     def update_item(self, item: MyCollectItem) -> MyCollectItem:
@@ -14,14 +16,29 @@ class Processor(metaclass=abc.ABCMeta):
         """
 
 class PipelineProcessor(Processor):
+    """Pipeline that manages processors
+    """
 
     def __init__(self):
         self._processors : List[Processor] = []
 
     def append_processor(self, processor: Processor) -> None:
+        """Add a processor to the list
+
+        Args:
+            processor (Processor): processor
+        """
         self._processors.append(processor)
 
     def update_item(self, item: MyCollectItem) -> MyCollectItem:
+        """Updates an item using the processors
+
+        Args:
+            item (MyCollectItem): MyCollectItem
+
+        Returns:
+            MyCollectItem: The updated item
+        """
         new_item = item
         for processor in self._processors:
             new_item = processor.update_item(item)

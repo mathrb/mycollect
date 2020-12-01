@@ -33,7 +33,7 @@ class Collector(metaclass=abc.ABCMeta):
         """
             Emit a new item
         """
-        self._callback(self._connector_name, item)
+        self._callback(item)
 
     def set_callback(self, callback) -> None:
         """

@@ -6,7 +6,8 @@ class MyCollectItem():
     """Represents an item being shared per sections
     """
 
-    def __init__(self, provider: str = None, category: str = None, text: str = None, url: str = None):
+    def __init__(self, provider: str = None, category: str = None,
+                 text: str = None, url: str = None):
         self._category = category
         self._text = text
         self._url = url
@@ -55,7 +56,12 @@ class MyCollectItem():
         """
         return self._provider
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
+        """Returns the dict form of this object
+
+        Returns:
+            dict: This object as dict
+        """
         return {
             "category": self._category,
             "provider": self._provider,
@@ -66,11 +72,19 @@ class MyCollectItem():
 
     @staticmethod
     def from_dict(item: dict):
+        """Creates a new MyCollectItem instance based on input dict
+
+        Args:
+            item (dict): MyCollectItem as dict
+
+        Returns:
+            MyCollectItem: the MyCollectItem created
+        """
         my_collect_item = MyCollectItem(
             provider=item["provider"],
             category=item["category"],
             text=item["text"],
-            url=item["url"]            
+            url=item["url"]
         )
         if "extra" in item:
             my_collect_item.extra.update(item["extra"])
