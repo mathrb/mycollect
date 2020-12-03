@@ -1,22 +1,22 @@
 """Starter module for mycollect
 """
 
-import asyncio
-from typing import List
-import datetime
 import argparse
+import datetime
+import time
+from typing import List
 
 import schedule
 import yaml
 
-from mycollect.logger import configure_logger, create_logger
-from mycollect.utils import get_class
+from mycollect.aggregators import Aggregator
 from mycollect.collectors import Collector
-from mycollect.storage import Storage
+from mycollect.logger import configure_logger, create_logger
+from mycollect.outputs import Output
 from mycollect.processors import PipelineProcessor
 from mycollect.processors.exit_processor import ExitProcessor
-from mycollect.aggregators import Aggregator
-from mycollect.outputs import Output
+from mycollect.storage import Storage
+from mycollect.utils import get_class
 
 
 def load_types(items, extra_args: dict = None):
@@ -83,7 +83,7 @@ def report(storage: Storage, aggregators: List[Aggregator], outputs: List[Output
             output.render(agg)
 
 
-async def main_loop(config, infinite=True):
+def main_loop(config, infinite=True):
     """This is the run forever loop definition
     """
 
@@ -110,9 +110,8 @@ async def main_loop(config, infinite=True):
         collectors[collector].start()
 
     execution_time = "02:00"
-    processing = configuration.get("processing", None)
-    if processing:
-        execution_time = processing.get("execution_time", "02:00")
+    if "processing" in configuration:
+        execution_time = configuration["processing"].get("execution_time", "02:00")
 
     for processor in processors:
         schedule.every().day.at(execution_time).do(
@@ -121,7 +120,7 @@ async def main_loop(config, infinite=True):
     try:
         while infinite:
             schedule.run_pending()
-            await asyncio.sleep(1)
+            time.sleep(1)
             for local_connector in collectors:
                 collectors[local_connector].check_status()
     except KeyboardInterrupt:
@@ -135,4 +134,4 @@ if __name__ == '__main__':
     parser.add_argument("-c", "--configuration",
                         help="path to configuration file", default="config.yml")
     sys_args = parser.parse_args()
-    asyncio.run(main_loop(config=sys_args.configuration))
+    main_loop(config=sys_args.configuration)
