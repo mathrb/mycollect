@@ -5,7 +5,6 @@ verify_ssl = true
 
 [dev-packages]
 pylint = "*"
-colorama = "*"
 tqdm = "*"
 pytest = "*"
 autopep8 = "*"
@@ -20,6 +19,7 @@ boto3 = "*"
 pyaml = "*"
 schedule = "*"
 Jinja2 = "*"
+colorama = "*"
 
 [requires]
 python_version = "3.8"
