@@ -1,16 +1,22 @@
 """Starter module for mycollect
 """
 
-import asyncio
+import argparse
+import datetime
+import time
 from typing import List
 
 import schedule
 import yaml
 
-from mycollect.logger import configure_logger, create_logger
-from mycollect.utils import get_class
+from mycollect.aggregators import Aggregator
 from mycollect.collectors import Collector
-from mycollect.data_manager import DataManager
+from mycollect.logger import configure_logger, create_logger
+from mycollect.outputs import Output
+from mycollect.processors import PipelineProcessor
+from mycollect.processors.exit_processor import ExitProcessor
+from mycollect.storage import Storage
+from mycollect.utils import get_class
 
 
 def load_types(items, extra_args: dict = None):
@@ -24,13 +30,26 @@ def load_types(items, extra_args: dict = None):
     """
     collection = {}
     for item in items:
-        item_class = get_class(item["type"])
-        args = item.get("args", {})
-        if extra_args:
-            args.update(extra_args)
-        item_instance = item_class(**args)
-        collection[item["name"]] = item_instance
+        collection[item["name"]] = load_type(item, extra_args=extra_args)
     return collection
+
+
+def load_type(item, extra_args: dict = None):
+    """Loads the specified item defined by configuration
+
+    Args:
+        item (dict): configuration e
+        extra_args (dict, optional): extra arguments for the instanciation.
+            Defaults to None.
+
+    Returns:
+        [type]: An instance of type defined in the item
+    """
+    item_class = get_class(item["type"])
+    args = item.get("args", {})
+    if extra_args:
+        args.update(extra_args)
+    return item_class(**args)
 
 
 def execute_processing(processor, outputs):
@@ -45,38 +64,63 @@ def execute_processing(processor, outputs):
         outputs[output].output(result)
 
 
-async def main_loop():
+def report(storage: Storage, aggregators: List[Aggregator], outputs: List[Output]):
+    """Report
+
+    Args:
+        storage (Storage): storage
+        aggregators (List[Aggregator]): aggregators
+        outputs (List[Output]): outputs
+    """
+    yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
+    timestamp = round(yesterday.timestamp())
+    aggregates = []
+    for aggregator in aggregators:
+        aggregates.append(aggregator.aggregates(
+            storage.fetch_items(timestamp)))
+    for output in outputs:
+        for agg in aggregates:
+            output.render(agg)
+
+
+def main_loop(config, infinite=True):
     """This is the run forever loop definition
     """
 
-    configuration = yaml.safe_load(open("config.yaml", "rb"))
+    configuration = yaml.safe_load(open(config, "rb"))
 
     configure_logger(configuration["logging"])
     logger = create_logger()
 
     collectors: List[Collector] = load_types(configuration["collectors"])
-    data_manager: DataManager = load_types([configuration["data_manager"]])["file data manager"]
-    processors = load_types(configuration["processors"], {"data_manager" : data_manager})
+    storage: Storage = load_type(configuration["storage"])
+    processors = load_types(
+        configuration["processors"]) if "processors" in configuration else []
+    aggregators = load_types(configuration["aggregators"])
     outputs = load_types(configuration["outputs"])
+
+    pipeline = PipelineProcessor()
+    for processor in processors:
+        pipeline.append_processor(processor)
+    pipeline.append_processor(ExitProcessor(storage))
 
     for collector in collectors:
         logger.info("starting collector", collector=collector)
-        collectors[collector].set_callback(data_manager.store_raw_data)
+        collectors[collector].set_callback(pipeline.update_item)
         collectors[collector].start()
 
     execution_time = "02:00"
-    processing = configuration.get("processing", None)
-    if processing:
-        execution_time = processing.get("execution_time", "02:00")
+    if "processing" in configuration:
+        execution_time = configuration["processing"].get("execution_time", "02:00")
 
     for processor in processors:
         schedule.every().day.at(execution_time).do(
-            execute_processing, processors[processor], outputs)
+            report, storage, aggregators.values(), outputs.values())
 
     try:
-        while True:
+        while infinite:
             schedule.run_pending()
-            await asyncio.sleep(1)
+            time.sleep(1)
             for local_connector in collectors:
                 collectors[local_connector].check_status()
     except KeyboardInterrupt:
@@ -86,4 +130,8 @@ async def main_loop():
         logger.info("shutdown gracefully")
 
 if __name__ == '__main__':
-    asyncio.run(main_loop())
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-c", "--configuration",
+                        help="path to configuration file", default="config.yml")
+    sys_args = parser.parse_args()
+    main_loop(config=sys_args.configuration)

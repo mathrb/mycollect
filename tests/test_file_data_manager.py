@@ -3,16 +3,19 @@ import datetime
 import pytest
 import json
 
-from mycollect.data_manager.file_data_manager import FileDataManager
+from mycollect.storage.file_storage import FileStorage
+from mycollect.structures import MyCollectItem
 
 def test_store_data(tmp_path):
     d = tmp_path / "test"
     d.mkdir()
-    fdm = FileDataManager(d)
-    fdm.store_raw_data("foo", "bar")
+    fdm = FileStorage(d)
+    fdm.store_item(MyCollectItem("foo", "bar", "hello", "world"))
     assert os.path.exists(os.path.join(d, "foo"))
     dt = datetime.datetime.now()
-    filename = "{}_{}_{}.jsonl".format(dt.year, dt.month, dt.day)
+    filename = "{}_{:02d}_{:02d}.jsonl".format(dt.year, dt.month, dt.day)
+    print(filename)
+    print(os.listdir(os.path.join(d, "foo")))
     assert os.path.exists(os.path.join(d, "foo", filename))
     lines = list(open(os.path.join(d, "foo", filename)))
     assert 1 == len(lines)
@@ -20,18 +23,18 @@ def test_store_data(tmp_path):
     assert "timestamp" in value
     assert value["timestamp"] >= round(dt.timestamp())
     assert value["timestamp"] <= round(datetime.datetime.now().timestamp())
-    assert value["data"] == "bar"
+    assert value["data"]["category"] == "bar"
 
 def test_read_data(tmp_path):
     d = tmp_path / "test"
     d.mkdir()
-    fdm = FileDataManager(d)
+    fdm = FileStorage(d)
     print("x")
     timestamp = round(datetime.datetime.now().timestamp())
     for i in range(987):
-        fdm.store_raw_data("foo", i)
+        fdm.store_item(MyCollectItem("foo", str(i), "cat", "url"))
     i = 0
-    for item in fdm.read_raw_data("foo", timestamp):
-        assert i == item
+    for item in fdm.fetch_items(timestamp):
+        assert str(i) == item.category
         i += 1
     assert i == 987

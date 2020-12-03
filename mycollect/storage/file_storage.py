@@ -1,18 +1,18 @@
 """
-    File data manager stores data into files
+    File storage stores data into files
     One folder per provider, one file per day
 """
 import datetime
 import json
 import os
-from typing import Any
 
-from mycollect.data_manager import DataManager
+from mycollect.storage import Storage
+from mycollect.structures import MyCollectItem
 
 
-class FileDataManager(DataManager):
+class FileStorage(Storage):
     """
-        FileDataManager class
+        FileStorage class
         One folder per provider, one file per day
     """
 
@@ -20,7 +20,8 @@ class FileDataManager(DataManager):
         os.makedirs(folder, exist_ok=True)
         self._folder = folder
 
-    def store_raw_data(self, provider: str, data: Any) -> None:
+    def store_item(self, item: MyCollectItem) -> None:
+        provider = item.provider
         provider_path = os.path.join(self._folder, provider)
         if not os.path.exists(provider_path):
             os.makedirs(provider_path)
@@ -28,22 +29,22 @@ class FileDataManager(DataManager):
         file_path = self._get_file_path(provider, timestamp)
         with open(file_path, 'a', encoding='utf-8') as output_file:
             item = {
-                "timestamp" : timestamp,
-                "data": data
+                "timestamp": timestamp,
+                "data": item.to_dict()
             }
             output_file.write(json.dumps(item) + '\n')
 
-    def read_raw_data(self, provider: str, timestamp: int):
-        provider_path = os.path.join(self._folder, provider)
-        if os.path.exists(provider_path):
+    def fetch_items(self, timestamp: int):
+        for provider in os.listdir(self._folder):
             current_date = datetime.datetime.fromtimestamp(timestamp)
             while current_date.date() <= datetime.datetime.now().date():
-                file_path = self._get_file_path(provider, round(current_date.timestamp()))
+                file_path = self._get_file_path(
+                    provider, round(current_date.timestamp()))
                 if os.path.exists(file_path):
                     for line in open(file_path, encoding='utf-8'):
                         item = json.loads(line)
                         if item["timestamp"] >= timestamp:
-                            yield item["data"]
+                            yield MyCollectItem.from_dict(item["data"])
                 current_date += datetime.timedelta(days=1)
 
     def _get_file_path(self, provider, timestamp: int):
