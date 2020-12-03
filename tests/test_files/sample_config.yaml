@@ -63,13 +63,6 @@ logging:
         class : logging.StreamHandler
         formatter: plain_colored
         stream  : ext://sys.stdout
-      file:        
-        level: INFO
-        class : logging.handlers.TimedRotatingFileHandler
-        formatter: json
-        filename: logs/logconfig.log
-        when: D
-        interval: 1
   formatters:
       json: 
         class: pythonjsonlogger.jsonlogger.JsonFormatter
@@ -78,6 +71,5 @@ logging:
   loggers:
     mycollect:
       handlers: 
-        - file
         - console
       level: DEBUG
