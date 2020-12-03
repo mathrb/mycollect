@@ -40,3 +40,13 @@ def test_get_url():
     assert url
     assert url == "https://msft.it/6010Tg0qC"
 
+def test_get_raw_data():
+    collector = TwitterCollector(None, None, None, None, None, [
+        "t.co",
+        "twitter.com"
+    ], ["drone"])
+    def on_callback(item):
+        assert item
+    collector.set_callback(on_callback)
+    sample_tweet = ''.join(open("tests/test_files/sample_tweet.json"))
+    assert collector.on_data(sample_tweet)

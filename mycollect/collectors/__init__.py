@@ -10,9 +10,8 @@ class Collector(metaclass=abc.ABCMeta):
     """Base collector class
     """
 
-    def __init__(self, connector_name):
+    def __init__(self):
         self._callback = None
-        self._connector_name = connector_name
 
     @abc.abstractmethod
     def start(self) -> None:

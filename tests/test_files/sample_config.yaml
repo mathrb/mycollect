@@ -1,0 +1,83 @@
+collectors:
+  - name: twitter
+    type: mycollect.collectors.twitter_collector.TwitterCollector
+    args:
+      consumer_key: 
+      consumer_secret: 
+      access_token: 
+      access_secret: 
+      languages:
+        - en
+      low_priority_url:
+        - t.co
+        - twitter.com
+      track:
+        - python
+        - nodejs
+        - kubernetes aws
+        - batman and robin
+
+storage:
+  type: mycollect.storage.file_storage.FileStorage
+  args:
+    folder: storage
+
+processing:
+  execution_time: "18:00"
+
+aggregators:
+  - name: dummy aggregator
+    type: mycollect.aggregators.dummy_aggregator.DummyAggregator
+    args:
+      top_articles: 3
+
+outputs:
+  - name: email
+    type: mycollect.outputs.email_output.EmailOutput
+    args:
+      aws_access_key: 
+      aws_secret_key: 
+      aws_region: 
+      sender: Collect <mathrb@gmail.com>
+      recipients:
+        - mathrb@gmail.com
+      limit_per_category: 3
+      template: | 
+        <html>
+        <head></head>
+        <body>
+            <h1>News Reporting</h1>{% for category, items in results.items() %}
+                <h2>{{ category }}</h2>{% for item in items %}
+                    <p>({{item["count"]}}) {{item["text"]}} <br> <a href='{{item["url"]}}' >{{item["url"]}}</a></p>{% endfor %}
+                <br>{% endfor %}
+        </body>
+        </html>
+
+
+logging:  
+  version: 1
+  disable_existing_loggers: true
+  handlers:
+      console:
+        level: DEBUG
+        class : logging.StreamHandler
+        formatter: plain_colored
+        stream  : ext://sys.stdout
+      file:        
+        level: INFO
+        class : logging.handlers.TimedRotatingFileHandler
+        formatter: json
+        filename: logs/logconfig.log
+        when: D
+        interval: 1
+  formatters:
+      json: 
+        class: pythonjsonlogger.jsonlogger.JsonFormatter
+      plain_colored:
+        (): mycollect.logger.plain_colored_formatter
+  loggers:
+    mycollect:
+      handlers: 
+        - file
+        - console
+      level: DEBUG

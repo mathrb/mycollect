@@ -83,7 +83,7 @@ def report(storage: Storage, aggregators: List[Aggregator], outputs: List[Output
             output.render(agg)
 
 
-async def main_loop(config):
+async def main_loop(config, infinite=True):
     """This is the run forever loop definition
     """
 
@@ -119,7 +119,7 @@ async def main_loop(config):
             report, storage, aggregators.values(), outputs.values())
 
     try:
-        while True:
+        while infinite:
             schedule.run_pending()
             await asyncio.sleep(1)
             for local_connector in collectors:
