@@ -17,9 +17,9 @@ structlog = "*"
 python-json-logger = "*"
 boto3 = "*"
 pyaml = "*"
-schedule = "*"
 Jinja2 = "*"
 colorama = "*"
+apscheduler = "*"
 
 [requires]
 python_version = "3.8"

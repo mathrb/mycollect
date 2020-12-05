@@ -12,7 +12,8 @@ class DummyAggregator(Aggregator): #pylint: disable=R0903
     """Aggregates item to a basic category list with top x items
     """
 
-    def __init__(self, top_articles=3):
+    def __init__(self, top_articles=3, **kwargs):
+        super().__init__(**kwargs)
         self._top_articles = top_articles
 
     def aggregates(self, items: Iterable[MyCollectItem]):

@@ -5,8 +5,8 @@ from mycollect.outputs.email_output import EmailOutput
 from mycollect.structures import MyCollectItem
 
 def test_email_output():
-    _ = EmailOutput(None, None, None, "", None, None)
-    __ = EmailOutput("", "", "eu-west-3", "", None, None)
+    _ = EmailOutput(None, None, "", None, None, [])
+    __ = EmailOutput("", "", "eu-west-3", None, None, [])
 
 def test_generate_body():
     # content = "".join(open("tests/test_files/email_template.j2"))
