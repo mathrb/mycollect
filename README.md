@@ -30,9 +30,28 @@ The email sender requires an [AWS account](aws-account), and will use the SES se
 You can configure the twitter collect:
 
 * languages: list of languages of the tweets
-* output_file: path to the file that will contains the collected tweets
 * low_priority_url: prioritize URLs in tweets which have a different hostname from the list
 * track: list of terms you want to follow
+
+## Configuring the storage
+
+Currently only file storage is implemented. You can specify the folder where the files will be stored:
+
+```yaml
+storage:
+  type: mycollect.storage.file_storage.FileStorage
+  args:
+    folder: STORAGE_FOLDER
+```
+
+## Configuring the execution time
+
+Currently we only support one processing per day, you can choose at what time of day you want the report:
+
+```yaml
+processing:
+  execution_time: "18:00"
+```
 
 ## Configuring output
 
