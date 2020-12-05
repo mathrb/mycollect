@@ -131,6 +131,6 @@ def main_loop(config, infinite=True):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("-c", "--configuration",
-                        help="path to configuration file", default="config.yml")
+                        help="path to configuration file", default="config.yaml")
     sys_args = parser.parse_args()
     main_loop(config=sys_args.configuration)
