@@ -6,7 +6,8 @@ import datetime
 import time
 from typing import List
 
-import schedule
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.cron import CronTrigger
 import yaml
 
 from mycollect.aggregators import Aggregator
@@ -17,6 +18,8 @@ from mycollect.processors import PipelineProcessor
 from mycollect.processors.exit_processor import ExitProcessor
 from mycollect.storage import Storage
 from mycollect.utils import get_class
+
+SCHEDULER = BackgroundScheduler()
 
 
 def load_types(items, extra_args: dict = None):
@@ -83,15 +86,28 @@ def report(storage: Storage, aggregators: List[Aggregator], outputs: List[Output
             output.render(agg)
 
 
-def main_loop(config, infinite=True):
+def run_aggregator(storage: Storage, aggregator: Aggregator, outputs: List[Output]):
+    """Runs the aggregator and notify the outputs
+
+    Args:
+        storage (Storage): storage reference
+        aggregator (Aggregator): aggregator that needs to run
+        outputs (List[Output]): outputs
+    """
+    yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
+    timestamp = round(yesterday.timestamp())
+    agg = aggregator.aggregates(storage.fetch_items(timestamp))
+    for output in outputs:
+        output.render(agg, aggregator.notify)
+
+
+def main_loop(config, infinite=True):  # pylint:disable=too-many-locals
     """This is the run forever loop definition
     """
 
     configuration = yaml.safe_load(open(config, "rb"))
-
     configure_logger(configuration["logging"])
     logger = create_logger()
-
     collectors: List[Collector] = load_types(configuration["collectors"])
     storage: Storage = load_type(configuration["storage"])
     processors = load_types(
@@ -109,16 +125,15 @@ def main_loop(config, infinite=True):
         collectors[collector].set_callback(pipeline.update_item)
         collectors[collector].start()
 
-    execution_time = "18:30"
-    if "processing" in configuration:
-        execution_time = configuration["processing"].get("execution_time", "18:30")
+    for aggregator in aggregators:
+        run_agg_args = [storage, aggregators[aggregator], outputs.values()]
+        trigger = CronTrigger.from_crontab(aggregators[aggregator].schedule)
+        SCHEDULER.add_job(run_aggregator, trigger, args=run_agg_args)
 
-    schedule.every().day.at(execution_time).do(
-        report, storage, aggregators.values(), outputs.values())
+    SCHEDULER.start()
 
     try:
         while infinite:
-            schedule.run_pending()
             time.sleep(1)
             for local_connector in collectors:
                 collectors[local_connector].check_status()
@@ -126,7 +141,9 @@ def main_loop(config, infinite=True):
         for local_collector in collectors:
             logger.info("stopping collector", collector=local_collector)
             collectors[local_collector].stop()
+        SCHEDULER.shutdown()
         logger.info("shutdown gracefully")
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

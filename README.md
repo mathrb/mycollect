@@ -44,14 +44,23 @@ storage:
     folder: STORAGE_FOLDER
 ```
 
-## Configuring the execution time
+## Configuring aggregators
 
-Currently we only support one processing per day, you can choose at what time of day you want the report:
+Currently there is only one aggregator: DummyAggregator, that will group elements per URL and category,
+and electing the top x per category
 
 ```yaml
-processing:
-  execution_time: "18:00"
+aggregators:
+  - name: dummy aggregator
+    type: mycollect.aggregators.dummy_aggregator.DummyAggregator
+    schedule: 3 18 * * *
+    notify: daily_report
+    args:
+      top_articles: 3
 ```
+
+The schedule parameter is used to trigger the aggregator.
+The notify property is used to trigger the right output
 
 ## Configuring output
 
@@ -59,8 +68,9 @@ processing:
 
 * recipients: the list of emails you want to send an email to
 * sender: the email address that is used as the sender
-* limit_per_category: how much tweets per category will be present in the email
-* template: jinja2 template of the email body
+* templates: jinja2 templates of the email body
+
+A template should have a name and a template, the name should match one of the notify property in aggregators.
 
 ## Annexes
 
