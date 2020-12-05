@@ -109,13 +109,12 @@ def main_loop(config, infinite=True):
         collectors[collector].set_callback(pipeline.update_item)
         collectors[collector].start()
 
-    execution_time = "02:00"
+    execution_time = "18:30"
     if "processing" in configuration:
-        execution_time = configuration["processing"].get("execution_time", "02:00")
+        execution_time = configuration["processing"].get("execution_time", "18:30")
 
-    for processor in processors:
-        schedule.every().day.at(execution_time).do(
-            report, storage, aggregators.values(), outputs.values())
+    schedule.every().day.at(execution_time).do(
+        report, storage, aggregators.values(), outputs.values())
 
     try:
         while infinite:
