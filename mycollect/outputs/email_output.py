@@ -23,7 +23,6 @@ class EmailOutput(Output):
         for template in templates:
             self._templates[template["name"]] = Template(template["template"])
         self._sender = sender
-        self._templates = templates
         self._logger = create_logger()
 
     def render(self, aggregate: dict, notification_channel: str = None) -> None:
