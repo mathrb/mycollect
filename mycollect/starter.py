@@ -101,15 +101,13 @@ def run_aggregator(storage: Storage, aggregator: Aggregator, outputs: List[Outpu
         output.render(agg, aggregator.notify)
 
 
-def main_loop(config, infinite=True):
+def main_loop(config, infinite=True):  # pylint:disable=too-many-locals
     """This is the run forever loop definition
     """
 
     configuration = yaml.safe_load(open(config, "rb"))
-
     configure_logger(configuration["logging"])
     logger = create_logger()
-
     collectors: List[Collector] = load_types(configuration["collectors"])
     storage: Storage = load_type(configuration["storage"])
     processors = load_types(
@@ -128,8 +126,9 @@ def main_loop(config, infinite=True):
         collectors[collector].start()
 
     for aggregator in aggregators:
-        SCHEDULER.add_job(run_aggregator, CronTrigger.from_crontab(
-            aggregators[aggregator].schedule), args=[storage, aggregators[aggregator], outputs.values()])
+        run_agg_args = [storage, aggregators[aggregator], outputs.values()]
+        trigger = CronTrigger.from_crontab(aggregators[aggregator].schedule)
+        SCHEDULER.add_job(run_aggregator, trigger, args=run_agg_args)
 
     SCHEDULER.start()
 
