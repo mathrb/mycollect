@@ -17,7 +17,7 @@ from mycollect.outputs import Output
 from mycollect.processors import PipelineProcessor
 from mycollect.processors.exit_processor import ExitProcessor
 from mycollect.storage import Storage
-from mycollect.utils import get_class
+from mycollect.utils import get_class, get_object_fqdn
 
 SCHEDULER = BackgroundScheduler()
 
@@ -63,8 +63,7 @@ def run_aggregator(storage: Storage, aggregator: Aggregator, outputs: List[Outpu
         aggregator (Aggregator): aggregator that needs to run
         outputs (List[Output]): outputs
     """
-    local_logger = logger.bind(agg_type=aggregator.__module__ +
-                     "."+aggregator.__class__.__qualname__)
+    local_logger = logger.bind(agg_type=get_object_fqdn(aggregator))
     local_logger = local_logger.bind(notification_channel=aggregator.notify)
     local_logger = local_logger.bind(outputs=len(outputs))
     yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
@@ -74,6 +73,18 @@ def run_aggregator(storage: Storage, aggregator: Aggregator, outputs: List[Outpu
     for output in outputs:
         output.render(agg, aggregator.notify)
     local_logger.info("aggregator run ended")
+    log_next_runs()
+
+
+def log_next_runs():
+    """Logs the next jobs to run
+    """
+    logger = create_logger()
+    for job in SCHEDULER.get_jobs():
+        logger = logger.bind(job_name=job.name, next_run=job.next_run_time.isoformat())
+        if len(job.args) > 1 and isinstance(job.args[1], Aggregator):
+            logger.bind(agg_name=get_object_fqdn(job.args[1]))
+        logger.info("next job scheduled")
 
 
 def main_loop(config, infinite=True):  # pylint:disable=too-many-locals
@@ -107,7 +118,7 @@ def main_loop(config, infinite=True):  # pylint:disable=too-many-locals
         SCHEDULER.add_job(run_aggregator, trigger, args=run_agg_args)
 
     SCHEDULER.start()
-
+    log_next_runs()
     try:
         while infinite:
             time.sleep(1)
