@@ -7,3 +7,4 @@ tests/test_files/new_twitter_collect.jsonl
 .coverage
 htmlcov
 storage
+debug.py
