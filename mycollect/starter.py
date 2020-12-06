@@ -55,7 +55,7 @@ def load_type(item, extra_args: dict = None):
     return item_class(**args)
 
 
-def run_aggregator(storage: Storage, aggregator: Aggregator, outputs: List[Output]):
+def run_aggregator(storage: Storage, aggregator: Aggregator, outputs: List[Output], logger):
     """Runs the aggregator and notify the outputs
 
     Args:
@@ -63,11 +63,17 @@ def run_aggregator(storage: Storage, aggregator: Aggregator, outputs: List[Outpu
         aggregator (Aggregator): aggregator that needs to run
         outputs (List[Output]): outputs
     """
+    local_logger = logger.bind(agg_type=aggregator.__module__ +
+                     "."+aggregator.__class__.__qualname__)
+    local_logger = local_logger.bind(notification_channel=aggregator.notify)
+    local_logger = local_logger.bind(outputs=len(outputs))
     yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
     timestamp = round(yesterday.timestamp())
+    local_logger.info("aggregator run started", from_timestamp=timestamp)
     agg = aggregator.aggregates(storage.fetch_items(timestamp))
     for output in outputs:
         output.render(agg, aggregator.notify)
+    local_logger.info("aggregator run ended")
 
 
 def main_loop(config, infinite=True):  # pylint:disable=too-many-locals
@@ -95,7 +101,8 @@ def main_loop(config, infinite=True):  # pylint:disable=too-many-locals
         collectors[collector].start()
 
     for aggregator in aggregators:
-        run_agg_args = [storage, aggregators[aggregator], outputs.values()]
+        run_agg_args = [storage, aggregators[aggregator],
+                        outputs.values(), logger]
         trigger = CronTrigger.from_crontab(aggregators[aggregator].schedule)
         SCHEDULER.add_job(run_aggregator, trigger, args=run_agg_args)
 
