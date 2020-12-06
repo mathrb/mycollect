@@ -26,8 +26,8 @@ processing:
   execution_time: "18:00"
 
 aggregators:
-  - name: dummy aggregator
-    type: mycollect.aggregators.dummy_aggregator.DummyAggregator
+  - name: category aggregator
+    type: mycollect.aggregators.category_aggregator.CategoryAggregator
     args:
       top_articles: 3
       schedule: 0 0 * * *

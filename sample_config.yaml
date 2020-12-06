@@ -24,7 +24,7 @@ storage:
 
 aggregators:
   - name: dummy aggregator
-    type: mycollect.aggregators.dummy_aggregator.DummyAggregator
+    type: mycollect.aggregators.category_aggregator.CategoryAggregator
     args:
       top_articles: 3
       schedule: 0 0 * * *
