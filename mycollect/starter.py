@@ -55,37 +55,6 @@ def load_type(item, extra_args: dict = None):
     return item_class(**args)
 
 
-def execute_processing(processor, outputs):
-    """Starts processing the data
-
-    Arguments:
-        processor {processor} -- processor
-        outputs {list} -- list of output instances
-    """
-    result = processor.process()
-    for output in outputs:
-        outputs[output].output(result)
-
-
-def report(storage: Storage, aggregators: List[Aggregator], outputs: List[Output]):
-    """Report
-
-    Args:
-        storage (Storage): storage
-        aggregators (List[Aggregator]): aggregators
-        outputs (List[Output]): outputs
-    """
-    yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
-    timestamp = round(yesterday.timestamp())
-    aggregates = []
-    for aggregator in aggregators:
-        aggregates.append(aggregator.aggregates(
-            storage.fetch_items(timestamp)))
-    for output in outputs:
-        for agg in aggregates:
-            output.render(agg)
-
-
 def run_aggregator(storage: Storage, aggregator: Aggregator, outputs: List[Output]):
     """Runs the aggregator and notify the outputs
 
