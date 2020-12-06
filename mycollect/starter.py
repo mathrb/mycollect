@@ -83,7 +83,7 @@ def log_next_runs():
     for job in SCHEDULER.get_jobs():
         logger = logger.bind(job_name=job.name, next_run=job.next_run_time.isoformat())
         if len(job.args) > 1 and isinstance(job.args[1], Aggregator):
-            logger.bind(agg_name=get_object_fqdn(job.args[1]))
+            logger = logger.bind(agg_name=get_object_fqdn(job.args[1]))
         logger.info("next job scheduled")
 
 
