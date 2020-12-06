@@ -53,7 +53,7 @@ and electing the top x per category
 aggregators:
   - name: dummy aggregator
     type: mycollect.aggregators.dummy_aggregator.DummyAggregator
-    schedule: 3 18 * * *
+    schedule: 30 18 * * *
     notify: daily_report
     args:
       top_articles: 3
