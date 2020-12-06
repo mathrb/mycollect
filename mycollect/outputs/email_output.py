@@ -40,7 +40,8 @@ class EmailOutput(Output):
                     Message={'Body': {'Html': {'Data': body, 'Charset': 'UTF-8'}},
                              'Subject': {'Data': 'News reporting', 'Charset': 'UTF-8'}},
                     Source=self._sender)
-                self._logger.info("email sent", result=sent)
+                self._logger.info("email sent", result=sent,
+                                  notification_channel=notification_channel)
 
     def set_auth(self, aws_access_key, aws_secret_key, aws_region):
         """Set aws authentication

@@ -17,7 +17,7 @@ from mycollect.outputs import Output
 from mycollect.processors import PipelineProcessor
 from mycollect.processors.exit_processor import ExitProcessor
 from mycollect.storage import Storage
-from mycollect.utils import get_class
+from mycollect.utils import get_class, get_object_fqdn
 
 SCHEDULER = BackgroundScheduler()
 
@@ -55,38 +55,7 @@ def load_type(item, extra_args: dict = None):
     return item_class(**args)
 
 
-def execute_processing(processor, outputs):
-    """Starts processing the data
-
-    Arguments:
-        processor {processor} -- processor
-        outputs {list} -- list of output instances
-    """
-    result = processor.process()
-    for output in outputs:
-        outputs[output].output(result)
-
-
-def report(storage: Storage, aggregators: List[Aggregator], outputs: List[Output]):
-    """Report
-
-    Args:
-        storage (Storage): storage
-        aggregators (List[Aggregator]): aggregators
-        outputs (List[Output]): outputs
-    """
-    yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
-    timestamp = round(yesterday.timestamp())
-    aggregates = []
-    for aggregator in aggregators:
-        aggregates.append(aggregator.aggregates(
-            storage.fetch_items(timestamp)))
-    for output in outputs:
-        for agg in aggregates:
-            output.render(agg)
-
-
-def run_aggregator(storage: Storage, aggregator: Aggregator, outputs: List[Output]):
+def run_aggregator(storage: Storage, aggregator: Aggregator, outputs: List[Output], logger):
     """Runs the aggregator and notify the outputs
 
     Args:
@@ -94,11 +63,28 @@ def run_aggregator(storage: Storage, aggregator: Aggregator, outputs: List[Outpu
         aggregator (Aggregator): aggregator that needs to run
         outputs (List[Output]): outputs
     """
+    local_logger = logger.bind(agg_type=get_object_fqdn(aggregator))
+    local_logger = local_logger.bind(notification_channel=aggregator.notify)
+    local_logger = local_logger.bind(outputs=len(outputs))
     yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
     timestamp = round(yesterday.timestamp())
+    local_logger.info("aggregator run started", from_timestamp=timestamp)
     agg = aggregator.aggregates(storage.fetch_items(timestamp))
     for output in outputs:
         output.render(agg, aggregator.notify)
+    local_logger.info("aggregator run ended")
+    log_next_runs()
+
+
+def log_next_runs():
+    """Logs the next jobs to run
+    """
+    logger = create_logger()
+    for job in SCHEDULER.get_jobs():
+        logger = logger.bind(job_name=job.name, next_run=job.next_run_time.isoformat())
+        if len(job.args) > 1 and isinstance(job.args[1], Aggregator):
+            logger.bind(agg_name=get_object_fqdn(job.args[1]))
+        logger.info("next job scheduled")
 
 
 def main_loop(config, infinite=True):  # pylint:disable=too-many-locals
@@ -126,12 +112,13 @@ def main_loop(config, infinite=True):  # pylint:disable=too-many-locals
         collectors[collector].start()
 
     for aggregator in aggregators:
-        run_agg_args = [storage, aggregators[aggregator], outputs.values()]
+        run_agg_args = [storage, aggregators[aggregator],
+                        outputs.values(), logger]
         trigger = CronTrigger.from_crontab(aggregators[aggregator].schedule)
         SCHEDULER.add_job(run_aggregator, trigger, args=run_agg_args)
 
     SCHEDULER.start()
-
+    log_next_runs()
     try:
         while infinite:
             time.sleep(1)
