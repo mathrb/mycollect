@@ -9,7 +9,7 @@ from mycollect.structures import MyCollectItem
 from mycollect.logger import create_logger
 
 
-class DummyAggregator(Aggregator):  # pylint: disable=R0903
+class CategoryAggregator(Aggregator):  # pylint: disable=R0903
     """Aggregates item to a basic category list with top x items
     """
 
