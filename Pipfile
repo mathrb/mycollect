@@ -20,6 +20,7 @@ pyaml = "*"
 Jinja2 = "*"
 colorama = "*"
 apscheduler = "*"
+newspaper3k = "*"
 
 [requires]
 python_version = "3.8"
