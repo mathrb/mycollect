@@ -36,9 +36,10 @@ outputs:
   - name: email
     type: mycollect.outputs.email_output.EmailOutput
     args:
-      aws_access_key: 
-      aws_secret_key: 
-      aws_region: 
+      aws:
+        aws_access_key: 
+        aws_secret_key: 
+        aws_region: eu-west-1
       sender: Collect <mathrb@gmail.com>
       recipients:
         - mathrb@gmail.com
