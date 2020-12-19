@@ -1,12 +1,20 @@
 """Tests the email output
 """
 
+import pytest
+
 from mycollect.outputs.email_output import EmailOutput
 from mycollect.structures import MyCollectItem
 
+
 def test_email_output():
-    _ = EmailOutput(None, None, "", None, None, [])
-    __ = EmailOutput("", "", "eu-west-3", None, None, [])
+    with pytest.raises(ValueError):
+        _ = EmailOutput(["john.doe@gmail.com"], "mycollect@gmail.com", [])
+    _ = EmailOutput(["john.doe@gmail.com"], "mycollect@gmail.com", [],
+                    aws={"aws_access_key": "", "aws_secret_key": "", "aws_region": "eu-west-1"})
+    _ = EmailOutput(["john.doe@gmail.com"],
+                    "mycollect@gmail.com", [], smtp={"host": "localhost"})
+
 
 def test_generate_body():
     # content = "".join(open("tests/test_files/email_template.j2"))
