@@ -103,7 +103,7 @@ def main_loop(config, infinite=True):  # pylint:disable=too-many-locals
 
     pipeline = PipelineProcessor()
     for processor in processors:
-        pipeline.append_processor(processor)
+        pipeline.append_processor(processors[processor])
     pipeline.append_processor(ExitProcessor(storage))
 
     for collector in collectors:

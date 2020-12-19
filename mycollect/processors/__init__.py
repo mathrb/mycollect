@@ -4,6 +4,7 @@
 import abc
 from typing import List
 from mycollect.structures import MyCollectItem
+from mycollect.logger import create_logger
 
 class Processor(metaclass=abc.ABCMeta): #pylint:disable=R0903
     """Transforms a MyCollectItem
@@ -21,6 +22,7 @@ class PipelineProcessor(Processor):
 
     def __init__(self):
         self._processors : List[Processor] = []
+        self._logger = create_logger()
 
     def append_processor(self, processor: Processor) -> None:
         """Add a processor to the list
@@ -41,7 +43,10 @@ class PipelineProcessor(Processor):
         """
         new_item = item
         for processor in self._processors:
-            new_item = processor.update_item(item)
-            if not new_item:
-                break
+            try:
+                new_item = processor.update_item(item)
+                if not new_item:
+                    break
+            except Exception as err:
+                self._logger.exception(err)
         return new_item
