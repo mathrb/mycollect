@@ -1,0 +1,10 @@
+version: "2.1"
+services:
+  mycollect:
+    image: mathrb/mycollect:0.0.1
+    container_name: mycollect
+    volumes:
+      - /path_to_storage:/storage
+      - /path_to_config_file/config.yaml:/app/config.yaml
+      - /path_to_log_folder:/app/logs
+    restart: unless-stopped
