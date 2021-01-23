@@ -62,7 +62,7 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
                 try:
                     url = unshorten_url(url)
                 except Exception as err:
-                    self._logger.exception(str(err))
+                    self._logger.exception(err)
                     raise
 
             if url and category:
