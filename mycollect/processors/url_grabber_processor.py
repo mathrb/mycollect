@@ -27,7 +27,7 @@ class UrlGrabberProcessor(Processor):  # pylint:disable=too-few-public-methods
         """
             Updates the current MyCollectItem, return None to drop this item
         """
-        if not self._is_restricted:
+        if not self._is_restricted(item.url):
             article = Article(item.url)
             try:
                 article.download()
@@ -40,6 +40,8 @@ class UrlGrabberProcessor(Processor):  # pylint:disable=too-few-public-methods
                     "title": article.title,
                     "keywords": article.keywords
                 }
+            else:
+                self._logger.warning("download state", state=article.download_state, url=item.url)
         return item
 
     @staticmethod
