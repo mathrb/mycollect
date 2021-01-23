@@ -10,7 +10,7 @@ from mycollect.processors import Processor
 from mycollect.structures import MyCollectItem
 
 INVALID_URL_NEWS = [
-    "https://twitter.com/i/web/status"
+    "https://twitter.com"
 ]
 
 
@@ -30,18 +30,19 @@ class UrlGrabberProcessor(Processor):  # pylint:disable=too-few-public-methods
         if not self._is_restricted(item.url):
             article = Article(item.url)
             try:
-                article.download()
+                article.download(recursion_counter=2)
                 article.parse()
             except Exception as err:  # pylint:disable=broad-except
                 self._logger.exception(err)
-            if article.download_state == ArticleDownloadState.SUCCESS:
-                item.extra["article"] = {
-                    "text": article.text,
-                    "title": article.title,
-                    "keywords": article.keywords
-                }
             else:
-                self._logger.warning("download state", state=article.download_state, url=item.url)
+                if article.download_state == ArticleDownloadState.SUCCESS:
+                    item.extra["article"] = {
+                        "text": article.text,
+                        "title": article.title,
+                        "keywords": article.keywords
+                    }
+                else:
+                    self._logger.warning("download state", state=article.download_state, url=item.url)
         return item
 
     @staticmethod
