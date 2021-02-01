@@ -42,7 +42,8 @@ class UrlGrabberProcessor(Processor):  # pylint:disable=too-few-public-methods
                         "keywords": article.keywords
                     }
                 else:
-                    self._logger.warning("download state", state=article.download_state, url=item.url)
+                    self._logger.warning("download state",
+                                         state=article.download_state, url=item.url)
         return item
 
     @staticmethod

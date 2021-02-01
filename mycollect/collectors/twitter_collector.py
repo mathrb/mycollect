@@ -40,12 +40,14 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
         if not self._twitter_stream.running:
             self._logger.info("twitter collect not running, restarting")
             self.stop()
+            self._twitter_stream = Stream(self._auth, self)
             self.start()
 
     def stop(self):
         """Stops the streaming
         """
-        self._twitter_stream.disconnect()
+        if self._twitter_stream:
+            self._twitter_stream.disconnect()
 
     def on_data(self, raw_data):
         try:
