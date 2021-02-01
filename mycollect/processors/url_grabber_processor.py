@@ -3,7 +3,7 @@ Processor that will get the content of a webpage
 """
 from typing import Optional
 
-from newspaper.article import Article, ArticleDownloadState
+from newspaper.article import Article, ArticleDownloadState, Configuration
 
 from mycollect.logger import create_logger
 from mycollect.processors import Processor
@@ -28,7 +28,11 @@ class UrlGrabberProcessor(Processor):  # pylint:disable=too-few-public-methods
             Updates the current MyCollectItem, return None to drop this item
         """
         if not self._is_restricted(item.url):
-            article = Article(item.url)
+            user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0)' \
+                ' Gecko/20100101 Firefox/85.0'
+            config = Configuration()
+            config.browser_user_agent = user_agent
+            article = Article(item.url, config=config)
             try:
                 article.download(recursion_counter=2)
                 article.parse()
