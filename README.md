@@ -100,3 +100,4 @@ Once done, get:
 * aws access key
 * aws secret key
 * aws region of the SES service (it might depend on your location)
+
