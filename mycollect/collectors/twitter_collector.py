@@ -37,8 +37,11 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
     def check_status(self):
         """Check the status of the collect
         """
-        if not self._twitter_stream.running:
-            self._logger.info("twitter collect not running, restarting")
+        is_alive = self._twitter_stream._thread.is_alive()  # pylint:disable=protected-access
+        if not self._twitter_stream.running or not is_alive:
+            self._logger.info("twitter collect not running, restarting",
+                              running=self._twitter_stream.running,
+                              is_alive=is_alive)
             self.stop()
             self._twitter_stream = Stream(self._auth, self)
             self.start()
