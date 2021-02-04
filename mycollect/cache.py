@@ -4,6 +4,7 @@ import abc
 import dbm
 import os
 from typing import Optional
+import tempfile
 
 
 class MyCache(metaclass=abc.ABCMeta):
@@ -45,8 +46,10 @@ class DbmCache(MyCache):
     """A simple cache with dbm backend
     """
 
-    def __init__(self, name: str, working_folder: str):
+    def __init__(self, name: str, working_folder: str = None):
         super().__init__(name)
+        if working_folder is None:
+            working_folder = tempfile.mkdtemp()
         self._db = dbm.open(os.path.join(working_folder, name), 'c')
 
     def set_item(self, key: str, value: str) -> None:
