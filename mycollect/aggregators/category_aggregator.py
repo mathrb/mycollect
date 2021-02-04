@@ -19,7 +19,7 @@ class CategoryAggregator(Aggregator):  # pylint: disable=R0903
         self._logger = create_logger()
 
     def aggregates(self, items: Iterable[MyCollectItem]):
-        categories = defaultdict(dict)
+        categories: dict = defaultdict(dict)
         item_count = 0
         for mycollect_item in items:
             item_count += 1
@@ -38,8 +38,8 @@ class CategoryAggregator(Aggregator):  # pylint: disable=R0903
                     "text": mycollect_items[0].text
                 }
                 category_items.append(item)
-            items = sorted(
+            sorted_items = sorted(
                 category_items, key=lambda x: x["count"], reverse=True)
-            results[category] = items[:self._top_articles]
+            results[category] = sorted_items[:self._top_articles]
         logger.info("dummy aggregation done", categories=len(results))
         return results
