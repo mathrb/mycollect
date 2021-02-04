@@ -15,9 +15,8 @@ class ExitProcessor(Processor):#pylint:disable=R0903
     def __init__(self, storage: Storage):
         self._storage: Storage = storage
 
-    def update_item(self, item: MyCollectItem) -> Optional[MyCollectItem]:
+    def update_item(self, item: MyCollectItem) -> Optional[MyCollectItem]: # type:ignore
         """
             Updates the current MyCollectItem, return None to drop this item
         """
         self._storage.store_item(item)
-        return None
