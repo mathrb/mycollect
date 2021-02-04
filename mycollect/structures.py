@@ -1,6 +1,8 @@
 """Defines structures used in mycollect
 """
 
+from typing import Optional
+
 
 class MyCollectItem():
     """Represents an item being shared per sections
@@ -12,10 +14,10 @@ class MyCollectItem():
         self._text = text
         self._url = url
         self._provider = provider
-        self._extra = {}
+        self._extra: dict = {}
 
     @property
-    def category(self):
+    def category(self) -> Optional[str]:
         """Returns the category of this item
         """
         return self._category
@@ -25,7 +27,7 @@ class MyCollectItem():
         self._category = value
 
     @property
-    def text(self):
+    def text(self) -> Optional[str]:
         """Returns the text belonging to this item
         """
         return self._text
@@ -35,7 +37,7 @@ class MyCollectItem():
         self._text = value
 
     @property
-    def url(self):
+    def url(self) -> Optional[str]:
         """Returns the url of this item
         """
         return self._url
@@ -51,7 +53,7 @@ class MyCollectItem():
         return self._extra
 
     @property
-    def provider(self) -> str:
+    def provider(self) -> Optional[str]:
         """Gets the provider of this item
         """
         return self._provider

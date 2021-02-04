@@ -6,8 +6,8 @@ import datetime
 import time
 from typing import List
 
-from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.triggers.cron import CronTrigger
+from apscheduler.schedulers.background import BackgroundScheduler # type: ignore
+from apscheduler.triggers.cron import CronTrigger # type: ignore
 import yaml
 
 from mycollect.aggregators import Aggregator

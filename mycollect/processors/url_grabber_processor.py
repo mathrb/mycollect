@@ -3,7 +3,7 @@ Processor that will get the content of a webpage
 """
 from typing import Optional
 
-from newspaper.article import Article, ArticleDownloadState, Configuration
+from newspaper.article import Article, ArticleDownloadState, Configuration # type: ignore
 
 from mycollect.logger import create_logger
 from mycollect.processors import Processor

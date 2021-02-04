@@ -20,3 +20,4 @@ class ExitProcessor(Processor):#pylint:disable=R0903
             Updates the current MyCollectItem, return None to drop this item
         """
         self._storage.store_item(item)
+        return None

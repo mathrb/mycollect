@@ -4,8 +4,8 @@ import json
 from typing import Iterator, Optional
 from urllib.parse import urlparse
 
-from tweepy import OAuthHandler, Stream
-from tweepy.streaming import StreamListener
+from tweepy import OAuthHandler, Stream # type: ignore
+from tweepy.streaming import StreamListener # type: ignore
 
 from mycollect.collectors import Collector
 from mycollect.logger import create_logger

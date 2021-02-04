@@ -54,6 +54,6 @@ class DbmCache(MyCache):
 
     def get_item(self, key: str) -> Optional[str]:
         a = self._db.get(key, None)
-        if a:
+        if a is not None:
             return a.decode()
         return a

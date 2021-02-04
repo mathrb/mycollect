@@ -1,7 +1,7 @@
 """Aggregators are class that reads a bunch of data and makes sense of it
 """
 import abc
-from typing import Iterable
+from typing import Iterable, Optional
 from mycollect.structures import MyCollectItem
 
 
@@ -25,7 +25,7 @@ class Aggregator(metaclass=abc.ABCMeta):  # pylint: disable= R0903
         """
 
     @property
-    def schedule(self) -> str:
+    def schedule(self) -> Optional[str]:
         """Gets the schedule defined in configuration
 
         Returns:
@@ -34,7 +34,7 @@ class Aggregator(metaclass=abc.ABCMeta):  # pylint: disable= R0903
         return self._schedule
 
     @property
-    def notify(self) -> str:
+    def notify(self) -> Optional[str]:
         """Gets the notification channel
 
         Returns:
