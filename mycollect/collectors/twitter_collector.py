@@ -4,8 +4,8 @@ import json
 from typing import Iterator, Optional
 from urllib.parse import urlparse
 
-from tweepy import OAuthHandler, Stream # type: ignore
-from tweepy.streaming import StreamListener # type: ignore
+from tweepy import OAuthHandler, Stream  # type: ignore
+from tweepy.streaming import StreamListener  # type: ignore
 
 from mycollect.collectors import Collector
 from mycollect.logger import create_logger
@@ -38,6 +38,12 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
         """Check the status of the collect
         """
         is_alive = self._twitter_stream._thread.is_alive()  # pylint:disable=protected-access
+        self._logger.info("twitter check",
+                          is_alive=is_alive,
+                          running=self._twitter_stream.running,
+                          snooze_time=self._twitter_stream.snooze_time,
+                          retry_time=self._twitter_stream.retry_time,
+                          retry_count=self._twitter_stream.retry_count)
         if not self._twitter_stream.running or not is_alive:
             self._logger.info("twitter collect not running, restarting",
                               running=self._twitter_stream.running,
@@ -85,6 +91,9 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
     def on_error(self, status_code):
         self._logger.error("twitter error", status=status_code)
         return True
+
+    def on_exception(self, exception):
+        self._logger.error("twitter exception", exception=exception)
 
     def get_category(self, tweet: dict) -> Optional[str]:
         """Gets the category associated to the tweet
