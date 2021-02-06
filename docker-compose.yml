@@ -1,7 +1,7 @@
 version: "2.1"
 services:
   mycollect:
-    image: mathrb/mycollect:0.0.1
+    image: mathrb/mycollect:latest
     container_name: mycollect
     volumes:
       - ${PWD}/storage:/storage
