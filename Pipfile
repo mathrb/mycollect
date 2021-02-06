@@ -11,6 +11,7 @@ autopep8 = "*"
 pytest-cov = "*"
 rope = "*"
 mypy = "*"
+ipykernel = "*"
 
 [packages]
 tweepy = "*"
@@ -22,6 +23,8 @@ Jinja2 = "*"
 colorama = "*"
 apscheduler = "*"
 newspaper3k = "*"
+langdetect = "*"
+sklearn = "*"
 
 [requires]
 python_version = "3.8"
