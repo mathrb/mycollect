@@ -2,7 +2,7 @@
     Processors will update the mycollectitem through the pipeline
 """
 import abc
-from typing import List
+from typing import List, Optional
 from mycollect.structures import MyCollectItem
 from mycollect.logger import create_logger
 
@@ -12,7 +12,7 @@ class Processor(metaclass=abc.ABCMeta):  # pylint:disable=R0903
     """
 
     @abc.abstractmethod
-    def update_item(self, item: MyCollectItem) -> MyCollectItem:
+    def update_item(self, item: MyCollectItem) -> Optional[MyCollectItem]:
         """
             Updates the current MyCollectItem, return None to drop this item
         """
@@ -34,7 +34,7 @@ class PipelineProcessor(Processor):
         """
         self._processors.append(processor)
 
-    def update_item(self, item: MyCollectItem) -> MyCollectItem:
+    def update_item(self, item: MyCollectItem) -> Optional[MyCollectItem]:
         """Updates an item using the processors
 
         Args:
@@ -46,7 +46,7 @@ class PipelineProcessor(Processor):
         new_item = item
         for processor in self._processors:
             try:
-                new_item = processor.update_item(item)
+                new_item = processor.update_item(item) # type: ignore
                 if not new_item:
                     break
             except Exception as err:  # pylint:disable=broad-except

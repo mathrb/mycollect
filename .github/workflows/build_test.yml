@@ -33,6 +33,9 @@ jobs:
       run: |
         # stop the build if there are Python syntax errors or undefined names
         pipenv run pylint mycollect
+    - name: Mypy
+      run: |
+        pipenv run mypy mycollect
     - name: Test with pytest
       run: |
         pipenv run pytest . --cov=mycollect --cov-fail-under 80 --cov-report=html

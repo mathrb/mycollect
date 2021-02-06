@@ -10,6 +10,7 @@ pytest = "*"
 autopep8 = "*"
 pytest-cov = "*"
 rope = "*"
+mypy = "*"
 
 [packages]
 tweepy = "*"

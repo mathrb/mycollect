@@ -5,7 +5,7 @@ from email.header import Header
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-import boto3
+import boto3 # type: ignore
 from jinja2 import Template
 from mycollect.logger import create_logger
 from mycollect.outputs import Output
