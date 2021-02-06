@@ -41,7 +41,8 @@ class UrlGrabberProcessor(Processor):  # pylint:disable=too-few-public-methods
                 article = Article(item.url, config=config)
                 try:
                     article.download(recursion_counter=2)
-                    article.parse()
+                    if article.download_state == ArticleDownloadState.SUCCESS:
+                        article.parse()
                 except Exception as err:  # pylint:disable=broad-except
                     self._logger.exception(err)
                 else:
