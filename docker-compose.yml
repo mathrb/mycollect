@@ -4,7 +4,7 @@ services:
     image: mathrb/mycollect:0.0.1
     container_name: mycollect
     volumes:
-      - /path_to_storage:/storage
-      - /path_to_config_file/config.yaml:/app/config.yaml
-      - /path_to_log_folder:/app/logs
+      - ${PWD}/storage:/storage
+      - ${PWD}/config.yaml:/app/config.yaml
+      - ${PWD}/logs:/app/logs
     restart: unless-stopped
