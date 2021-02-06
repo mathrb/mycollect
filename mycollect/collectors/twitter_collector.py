@@ -3,6 +3,7 @@
 import json
 from typing import Iterator, Optional
 from urllib.parse import urlparse
+import time
 
 from tweepy import OAuthHandler, Stream  # type: ignore
 from tweepy.streaming import StreamListener  # type: ignore
@@ -27,6 +28,7 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
         self._auth = OAuthHandler(consumer_key, consumer_secret)
         self._auth.set_access_token(access_token, access_secret)
         self._twitter_stream = Stream(self._auth, self)
+        self._last_data = time.time()
 
     def start(self):
         """Collect data from twitter
@@ -43,11 +45,17 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
                           running=self._twitter_stream.running,
                           snooze_time=self._twitter_stream.snooze_time,
                           retry_time=self._twitter_stream.retry_time,
-                          retry_count=self._twitter_stream.retry_count)
+                          retry_count=self._twitter_stream.retry_count,
+                          last_data=self._last_data)
         if not self._twitter_stream.running or not is_alive:
             self._logger.info("twitter collect not running, restarting",
                               running=self._twitter_stream.running,
                               is_alive=is_alive)
+            self.stop()
+            self._twitter_stream = Stream(self._auth, self)
+            self.start()
+        elif time.time() - self._last_data > 1 * 60 * 60:
+            self._logger.info("twitter restart after being idle")
             self.stop()
             self._twitter_stream = Stream(self._auth, self)
             self.start()
@@ -60,6 +68,7 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
 
     def on_data(self, raw_data):
         try:
+            self._last_data = time.time()
             loaded_tweet = json.loads(raw_data)
             category = self.get_category(loaded_tweet)
             retweet = loaded_tweet.get("retweeted_status", None)
