@@ -40,13 +40,6 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
         """Check the status of the collect
         """
         is_alive = self._twitter_stream._thread.is_alive()  # pylint:disable=protected-access
-        self._logger.info("twitter check",
-                          is_alive=is_alive,
-                          running=self._twitter_stream.running,
-                          snooze_time=self._twitter_stream.snooze_time,
-                          retry_time=self._twitter_stream.retry_time,
-                          retry_count=self._twitter_stream.retry_count,
-                          last_data=self._last_data)
         if not self._twitter_stream.running or not is_alive:
             self._logger.info("twitter collect not running, restarting",
                               running=self._twitter_stream.running,
@@ -55,7 +48,13 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
             self._twitter_stream = Stream(self._auth, self)
             self.start()
         elif time.time() - self._last_data > 1 * 60 * 60:
-            self._logger.info("twitter restart after being idle")
+            self._logger.info("twitter restart after being idle",
+                              is_alive=is_alive,
+                              running=self._twitter_stream.running,
+                              snooze_time=self._twitter_stream.snooze_time,
+                              retry_time=self._twitter_stream.retry_time,
+                              retry_count=self._twitter_stream.retry_count,
+                              last_data=self._last_data)
             self.stop()
             self._twitter_stream = Stream(self._auth, self)
             self.start()
@@ -150,7 +149,7 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
                 real_url = parsed_url
         return real_url.geturl() if real_url else None
 
-    @staticmethod
+    @ staticmethod
     def get_url_stack(tweet: dict) -> Iterator[str]:
         """Returns all expanded urls from a tweet
 
@@ -172,7 +171,7 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
                     if "expanded_url" in url:
                         yield url["expanded_url"]
 
-    @staticmethod
+    @ staticmethod
     def get_text_for_category_selection(tweet):
         """Returns all text in which Twitter look for term matching
 
@@ -195,7 +194,7 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
         text += TwitterCollector.get_entities_text(tweet)
         return text
 
-    @staticmethod
+    @ staticmethod
     def get_entities_text(tweet):
         """Gets the text from tweet entities
 
