@@ -33,6 +33,7 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
     def start(self):
         """Collect data from twitter
         """
+        self._last_data = time.time()
         self._twitter_stream.filter(
             track=self._track, languages=self._languages, is_async=True)
 
