@@ -13,7 +13,8 @@ from mycollect.processors import Processor
 from mycollect.structures import MyCollectItem
 
 INVALID_URL_NEWS = [
-    "https://twitter.com"
+    "https://twitter.com",
+    "https://youtu.be"
 ]
 
 
