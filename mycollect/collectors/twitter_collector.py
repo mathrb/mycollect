@@ -94,7 +94,7 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
                 self.emit(item)
         except BaseException as err:  # pylint:disable=broad-except
             self._logger.error("on_data unexpected error: {}".format(err))
-            self._logger.exception(err)
+            self._logger.debug(err, exception=err)
         return True
 
     def on_error(self, status_code):
