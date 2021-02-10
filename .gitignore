@@ -8,3 +8,4 @@ tests/test_files/new_twitter_collect.jsonl
 htmlcov
 storage
 debug.py
+notebooks/data
