@@ -6,8 +6,8 @@ import datetime
 import time
 from typing import List
 
-from apscheduler.schedulers.background import BackgroundScheduler # type: ignore
-from apscheduler.triggers.cron import CronTrigger # type: ignore
+from apscheduler.schedulers.background import BackgroundScheduler  # type: ignore
+from apscheduler.triggers.cron import CronTrigger  # type: ignore
 import yaml
 
 from mycollect.aggregators import Aggregator
@@ -22,7 +22,7 @@ from mycollect.utils import get_class, get_object_fqdn
 SCHEDULER = BackgroundScheduler()
 
 
-def load_types(items, extra_args: dict = None):
+def load_types(items, extra_args: dict = None, return_config=False):
     """Loads the types defined in configuration section
 
     Arguments:
@@ -34,6 +34,11 @@ def load_types(items, extra_args: dict = None):
     collection = {}
     for item in items:
         collection[item["name"]] = load_type(item, extra_args=extra_args)
+        if return_config:
+            collection[item["name"]] = {
+                "instance": collection[item["name"]],
+                "configuration": item
+            }
     return collection
 
 
@@ -81,7 +86,8 @@ def log_next_runs():
     """
     logger = create_logger()
     for job in SCHEDULER.get_jobs():
-        logger = logger.bind(job_name=job.name, next_run=job.next_run_time.isoformat())
+        logger = logger.bind(
+            job_name=job.name, next_run=job.next_run_time.isoformat())
         if len(job.args) > 1 and isinstance(job.args[1], Aggregator):
             logger = logger.bind(agg_name=get_object_fqdn(job.args[1]))
         logger.info("next job scheduled")
@@ -95,7 +101,14 @@ def main_loop(config, infinite=True):  # pylint:disable=too-many-locals
     configure_logger(configuration["logging"])
     logger = create_logger()
     collectors: List[Collector] = load_types(configuration["collectors"])
-    storage: Storage = load_type(configuration["storage"])
+    storages: List[Storage] = load_types(
+        configuration["storages"], return_config=True)
+    storage: Storage = [
+        s for s in storages if storages[s]["configuration"].get("default", False)]
+    if not storage:
+        raise Exception(
+            "A default storage needs to be set. Add a default property to one of the storage")
+    storage = storage[0]
     processors = load_types(
         configuration["processors"]) if "processors" in configuration else []
     aggregators = load_types(configuration["aggregators"])
@@ -104,7 +117,7 @@ def main_loop(config, infinite=True):  # pylint:disable=too-many-locals
     pipeline = PipelineProcessor()
     for processor in processors:
         pipeline.append_processor(processors[processor])
-    pipeline.append_processor(ExitProcessor(storage))
+    pipeline.append_processor(ExitProcessor(storages))
 
     for collector in collectors:
         logger.info("starting collector", collector=collector)
