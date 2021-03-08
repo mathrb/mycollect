@@ -10,4 +10,4 @@ def test_grab_url():
     item.url = "https://fr.wikipedia.org/wiki/Lille"
     updated = processor.update_item(item)
     assert "article" in updated.extra
-    assert updated.extra["article"]["title"] == "Lille — Wikipédia"
+    assert updated.extra["article"]["title"] == "Lille"
