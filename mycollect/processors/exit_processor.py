@@ -8,7 +8,7 @@ from mycollect.storage import Storage
 from mycollect.structures import MyCollectItem
 
 
-class ExitProcessor(Processor):#pylint:disable=R0903
+class ExitProcessor(Processor):  # pylint:disable=R0903
     """Last processor that use storage to save the item
     """
 
@@ -16,7 +16,7 @@ class ExitProcessor(Processor):#pylint:disable=R0903
         if not storages:
             raise ValueError("storages")
         if not isinstance(storages, list):
-            storages = [storages]
+            storages = [storages]  # type:ignore
         self._storages: List[Storage] = storages
 
     def update_item(self, item: MyCollectItem) -> Optional[MyCollectItem]: # type:ignore

@@ -3,7 +3,7 @@ This storage is write only
 """
 import socket
 
-from influxdb.client import InfluxDBClient, InfluxDBClientError
+from influxdb.client import InfluxDBClient, InfluxDBClientError  # type: ignore
 
 from mycollect.storage import Storage
 from mycollect.structures import MyCollectItem
@@ -45,10 +45,10 @@ class InfluxDBStorage(Storage):
         self._client.write_points([
             {
                 "measurement": "mycollect_item",
-                "tags":{
+                "tags": {
                     "host": self._hostname
                 },
-                #"time": datetime.datetime.now(),
+                # "time": datetime.datetime.now(),
                 "fields": fields
             }]
         )
