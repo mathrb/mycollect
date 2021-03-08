@@ -22,6 +22,7 @@ Jinja2 = "*"
 colorama = "*"
 apscheduler = "*"
 newspaper3k = "*"
+influxdb = "*"
 
 [requires]
 python_version = "3.8"

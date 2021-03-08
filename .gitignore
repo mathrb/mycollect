@@ -6,5 +6,5 @@ tests/test_files/new_twitter_collect.jsonl
 .pytest_cache
 .coverage
 htmlcov
-storage
+/storage
 debug.py

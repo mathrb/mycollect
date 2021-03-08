@@ -17,10 +17,12 @@ collectors:
         - kubernetes aws
         - batman and robin
 
-storage:
-  type: mycollect.storage.file_storage.FileStorage
-  args:
-    folder: storage
+storages:
+  - name: file storage
+    default: yes 
+    type: mycollect.storage.file_storage.FileStorage
+    args:
+      folder: storage
 
 processing:
   execution_time: "18:00"
