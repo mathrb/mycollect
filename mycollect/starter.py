@@ -117,7 +117,7 @@ def main_loop(config, infinite=True):  # pylint:disable=too-many-locals
     pipeline = PipelineProcessor()
     for processor in processors:
         pipeline.append_processor(processors[processor])
-    pipeline.append_processor(ExitProcessor(list(storages.values())))
+    pipeline.append_processor(ExitProcessor([storages[s]["instance"] for s in storages]))
 
     for collector in collectors:
         logger.info("starting collector", collector=collector)
