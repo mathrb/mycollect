@@ -46,9 +46,9 @@ class InfluxDBStorage(Storage):
             {
                 "measurement": "mycollect_item",
                 "tags": {
-                    "host": self._hostname
+                    "provider": item["provider"],
+                    "category": item["category"]
                 },
-                # "time": datetime.datetime.now(),
                 "fields": fields
             }]
         )
