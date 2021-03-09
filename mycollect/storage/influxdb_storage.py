@@ -46,8 +46,8 @@ class InfluxDBStorage(Storage):
             {
                 "measurement": "mycollect_item",
                 "tags": {
-                    "provider": item["provider"],
-                    "category": item["category"]
+                    "provider": item.provider,
+                    "category": item.category
                 },
                 "fields": fields
             }]
