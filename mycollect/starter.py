@@ -103,12 +103,13 @@ def main_loop(config, infinite=True):  # pylint:disable=too-many-locals
     collectors: List[Collector] = load_types(configuration["collectors"])
     storages: List[Storage] = load_types(
         configuration["storages"], return_config=True)
-    storage: Storage = [
-        storages[s]["instance"] for s in storages if storages[s]["configuration"].get("default", False)]
+    storage: Storage = None
+    for storage in storages:
+        if storages[storage]["configuration"].get("default", False):
+            storage = storages[storage]["instance"]
     if not storage:
         raise Exception(
             "A default storage needs to be set. Add a default property to one of the storage")
-    storage = storage
     processors = load_types(
         configuration["processors"]) if "processors" in configuration else []
     aggregators = load_types(configuration["aggregators"])
@@ -117,7 +118,8 @@ def main_loop(config, infinite=True):  # pylint:disable=too-many-locals
     pipeline = PipelineProcessor()
     for processor in processors:
         pipeline.append_processor(processors[processor])
-    pipeline.append_processor(ExitProcessor([storages[s]["instance"] for s in storages]))
+    pipeline.append_processor(ExitProcessor(
+        [storages[s]["instance"] for s in storages]))
 
     for collector in collectors:
         logger.info("starting collector", collector=collector)
