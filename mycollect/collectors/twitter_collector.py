@@ -29,6 +29,7 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
         self._auth.set_access_token(access_token, access_secret)
         self._twitter_stream = Stream(self._auth, self)
         self._last_data = time.time()
+        self._timer_counter = 1
 
     def start(self):
         """Collect data from twitter
@@ -48,17 +49,20 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
             self.stop()
             self._twitter_stream = Stream(self._auth, self)
             self.start()
-        elif time.time() - self._last_data > 1 * 60 * 60:
+        elif time.time() - self._last_data > 1 * 60 * self._timer_counter:
             self._logger.info("twitter restart after being idle",
                               is_alive=is_alive,
                               running=self._twitter_stream.running,
                               snooze_time=self._twitter_stream.snooze_time,
                               retry_time=self._twitter_stream.retry_time,
                               retry_count=self._twitter_stream.retry_count,
+                              timer_counter=self._timer_counter,
                               last_data=self._last_data)
             self.stop()
             self._twitter_stream = Stream(self._auth, self)
             self.start()
+            if self._timer_counter < 60:
+                self._timer_counter += 1
 
     def stop(self):
         """Stops the streaming
@@ -69,6 +73,7 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
     def on_data(self, raw_data):
         try:
             self._last_data = time.time()
+            self._timer_counter = 1
             loaded_tweet = json.loads(raw_data)
             category = self.get_category(loaded_tweet)
             retweet = loaded_tweet.get("retweeted_status", None)
