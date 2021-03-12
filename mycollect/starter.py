@@ -104,11 +104,11 @@ def main_loop(config, infinite=True):  # pylint:disable=too-many-locals
     storages: List[Storage] = load_types(
         configuration["storages"], return_config=True)
     storage: Storage = [
-        s for s in storages if storages[s]["configuration"].get("default", False)]
+        storages[s]["instance"] for s in storages if storages[s]["configuration"].get("default", False)]
     if not storage:
         raise Exception(
             "A default storage needs to be set. Add a default property to one of the storage")
-    storage = storage[0]
+    storage = storage
     processors = load_types(
         configuration["processors"]) if "processors" in configuration else []
     aggregators = load_types(configuration["aggregators"])
