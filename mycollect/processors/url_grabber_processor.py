@@ -5,12 +5,14 @@ import json
 from typing import Optional
 from urllib.parse import urlparse
 
+from newspaper.article import (Article, ArticleDownloadState,  # type: ignore
+                               Configuration)
+
 from mycollect.cache import DbmCache
 from mycollect.logger import create_logger
 from mycollect.processors import Processor
 from mycollect.structures import MyCollectItem
-from newspaper.article import (Article, ArticleDownloadState,  # type: ignore
-                               Configuration)
+
 
 INVALID_URL_NEWS = [
     "https://twitter.com",
