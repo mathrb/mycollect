@@ -3,14 +3,14 @@ Processor that will get the content of a webpage
 """
 import json
 from typing import Optional
-
-from newspaper.article import (Article, ArticleDownloadState,  # type: ignore
-                               Configuration)
+from urllib.parse import urlparse
 
 from mycollect.cache import DbmCache
 from mycollect.logger import create_logger
 from mycollect.processors import Processor
 from mycollect.structures import MyCollectItem
+from newspaper.article import (Article, ArticleDownloadState,  # type: ignore
+                               Configuration)
 
 INVALID_URL_NEWS = [
     "https://twitter.com",
@@ -32,7 +32,7 @@ class UrlGrabberProcessor(Processor):  # pylint:disable=too-few-public-methods
         """
             Updates the current MyCollectItem, return None to drop this item
         """
-        if not self._is_restricted(item.url):
+        if not self._is_valid(item.url):
             cache_article = self._cache.get_item(item.url)
             if not cache_article:
                 user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0)' \
@@ -66,8 +66,10 @@ class UrlGrabberProcessor(Processor):  # pylint:disable=too-few-public-methods
         return item
 
     @staticmethod
-    def _is_restricted(url):
-        for invalid in INVALID_URL_NEWS:
-            if invalid in url:
-                return True
+    def _is_valid(url):
+        parsed_url = urlparse(url)
+        if parsed_url.scheme and parsed_url.netloc:
+            for invalid in INVALID_URL_NEWS:
+                if invalid in url:
+                    return True
         return False
