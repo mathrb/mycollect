@@ -23,6 +23,7 @@ colorama = "*"
 apscheduler = "*"
 newspaper3k = "*"
 influxdb = "*"
+cloudscraper = "*"
 
 [requires]
 python_version = "3.8"
