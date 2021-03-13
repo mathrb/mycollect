@@ -50,6 +50,9 @@ class UrlGrabberProcessor(Processor):  # pylint:disable=too-few-public-methods
                         article_response = self._cloudscrapper.get(item.url)
                         if article_response.status_code == 200:
                             article.set_html(article_response.text)
+                        else:
+                            article.download_state = article_response.status_code
+                            article.download_exception_msg = article_response.reason
                     if article.download_state == ArticleDownloadState.SUCCESS:
                         article.parse()
                 except Exception as err:  # pylint:disable=broad-except
