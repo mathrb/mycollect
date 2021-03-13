@@ -103,11 +103,11 @@ def main_loop(config, infinite=True):  # pylint:disable=too-many-locals
     collectors: List[Collector] = load_types(configuration["collectors"])
     storages: List[Storage] = load_types(
         configuration["storages"], return_config=True)
-    storage: Storage = None
+    default_storage: Storage = None
     for storage in storages:
         if storages[storage]["configuration"].get("default", False):
-            storage = storages[storage]["instance"]
-    if not storage:
+            default_storage = storages[storage]["instance"]
+    if not default_storage:
         raise Exception(
             "A default storage needs to be set. Add a default property to one of the storage")
     processors = load_types(
@@ -127,7 +127,7 @@ def main_loop(config, infinite=True):  # pylint:disable=too-many-locals
         collectors[collector].start()
 
     for aggregator in aggregators:
-        run_agg_args = [storage, aggregators[aggregator],
+        run_agg_args = [default_storage, aggregators[aggregator],
                         outputs.values(), logger]
         trigger = CronTrigger.from_crontab(aggregators[aggregator].schedule)
         SCHEDULER.add_job(run_aggregator, trigger, args=run_agg_args)
