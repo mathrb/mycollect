@@ -47,7 +47,8 @@ class UrlGrabberProcessor(Processor):  # pylint:disable=too-few-public-methods
                     if article.download_state == ArticleDownloadState.SUCCESS:
                         article.parse()
                 except Exception as err:  # pylint:disable=broad-except
-                    self._logger.error("Unable to download article", error=str(err))
+                    self._logger.error(
+                        "Unable to download article", error=str(err))
                     self._logger.debug(err)
                 else:
                     if article.download_state == ArticleDownloadState.SUCCESS:
@@ -60,7 +61,9 @@ class UrlGrabberProcessor(Processor):  # pylint:disable=too-few-public-methods
                             item.url, json.dumps(cache_article))
                     else:
                         self._logger.warning("download state",
-                                             state=article.download_state, url=item.url)
+                                             state=article.download_state,
+                                             url=item.url,
+                                             error_message=article.download_exception_msg)
             else:
                 cache_article = json.loads(cache_article)
             if cache_article:
