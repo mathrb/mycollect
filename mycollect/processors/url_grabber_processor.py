@@ -5,6 +5,7 @@ import json
 from typing import Optional
 from urllib.parse import urlparse
 
+import cloudscraper #type: ignore
 from newspaper.article import (Article, ArticleDownloadState,  # type: ignore
                                Configuration)
 
@@ -29,6 +30,7 @@ class UrlGrabberProcessor(Processor):  # pylint:disable=too-few-public-methods
         super().__init__()
         self._logger = create_logger()
         self._cache = DbmCache("url_grab")
+        self._cloudscrapper = cloudscraper.create_scraper()
 
     def update_item(self, item: MyCollectItem) -> Optional[MyCollectItem]:
         """
@@ -44,6 +46,10 @@ class UrlGrabberProcessor(Processor):  # pylint:disable=too-few-public-methods
                 article = Article(item.url, config=config)
                 try:
                     article.download(recursion_counter=2)
+                    if article.download_state == 1 and '403' in article.download_exception_msg:
+                        article_response = self._cloudscrapper.get(item.url)
+                        if article_response.status_code == 200:
+                            article.set_html(article_response.text)
                     if article.download_state == ArticleDownloadState.SUCCESS:
                         article.parse()
                 except Exception as err:  # pylint:disable=broad-except
