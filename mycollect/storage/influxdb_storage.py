@@ -40,6 +40,7 @@ class InfluxDBStorage(Storage):
             self._logger.exception(err)
 
     def store_item(self, item: MyCollectItem) -> None:
+        has_article = "article" in item.extra
         fields = item.to_dict()
         fields.pop("extra", None)
         self._client.write_points([
@@ -47,7 +48,8 @@ class InfluxDBStorage(Storage):
                 "measurement": "mycollect_item",
                 "tags": {
                     "provider": item.provider,
-                    "category": item.category
+                    "category": item.category,
+                    "hasArticle": has_article
                 },
                 "fields": fields
             }]
