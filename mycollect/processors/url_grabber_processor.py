@@ -36,7 +36,7 @@ class UrlGrabberProcessor(Processor):  # pylint:disable=too-few-public-methods
         """
             Updates the current MyCollectItem, return None to drop this item
         """
-        if not self._is_valid(item.url):
+        if self._is_valid(item.url):
             cache_article = self._cache.get_item(item.url)
             if not cache_article:
                 user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0)' \
@@ -47,12 +47,7 @@ class UrlGrabberProcessor(Processor):  # pylint:disable=too-few-public-methods
                 try:
                     article.download(recursion_counter=2)
                     if article.download_state == 1 and '403' in article.download_exception_msg:
-                        article_response = self._cloudscrapper.get(item.url)
-                        if article_response.status_code == 200:
-                            article.set_html(article_response.text)
-                        else:
-                            article.download_state = article_response.status_code
-                            article.download_exception_msg = article_response.reason
+                        article = self._cloudscrap(article)
                     if article.download_state == ArticleDownloadState.SUCCESS:
                         article.parse()
                 except Exception as err:  # pylint:disable=broad-except
@@ -66,8 +61,13 @@ class UrlGrabberProcessor(Processor):  # pylint:disable=too-few-public-methods
                             "title": article.title,
                             "keywords": article.keywords
                         }
-                        self._cache.set_item(
-                            item.url, json.dumps(cache_article))
+
+                        links = [item.url]
+                        if article.canonical_link:
+                            links.append(article.canonical_link)
+                            item.extra["origin_url"] = item.url
+                            item.url = article.canonical_link
+                        self._add_to_cache(cache_article, links)
                     else:
                         self._logger.warning("download state",
                                              state=article.download_state,
@@ -79,11 +79,26 @@ class UrlGrabberProcessor(Processor):  # pylint:disable=too-few-public-methods
                 item.extra["article"] = cache_article
         return item
 
+    def _cloudscrap(self, article: Article) -> Article:
+        article_response = self._cloudscrapper.get(article.url)
+        if article_response.status_code == 200:
+            article.set_html(article_response.text)
+        else:
+            article.download_state = article_response.status_code
+            article.download_exception_msg = article_response.reason
+        return article
+
+    def _add_to_cache(self, item: dict, links: list):
+        json_data = json.dumps(item)
+        for link in links:
+            self._cache.set_item(link, json_data)
+
     @staticmethod
     def _is_valid(url):
         parsed_url = urlparse(url)
         if parsed_url.scheme and parsed_url.netloc:
             for invalid in INVALID_URL_NEWS:
                 if invalid in url:
-                    return True
+                    return False
+            return True
         return False
