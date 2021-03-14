@@ -4,7 +4,7 @@
 import argparse
 import datetime
 import time
-from typing import List
+from typing import List, Dict, Any
 
 from apscheduler.schedulers.background import BackgroundScheduler  # type: ignore
 from apscheduler.triggers.cron import CronTrigger  # type: ignore
@@ -14,7 +14,7 @@ from mycollect.aggregators import Aggregator
 from mycollect.collectors import Collector
 from mycollect.logger import configure_logger, create_logger
 from mycollect.outputs import Output
-from mycollect.processors import PipelineProcessor
+from mycollect.processors import PipelineProcessor, Processor
 from mycollect.processors.exit_processor import ExitProcessor
 from mycollect.storage import Storage
 from mycollect.utils import get_class, get_object_fqdn
@@ -22,7 +22,7 @@ from mycollect.utils import get_class, get_object_fqdn
 SCHEDULER = BackgroundScheduler()
 
 
-def load_types(items, extra_args: dict = None, return_config=False):
+def load_types(items, extra_args: dict = None, return_config=False) -> Dict[str, Any]:
     """Loads the types defined in configuration section
 
     Arguments:
@@ -42,7 +42,7 @@ def load_types(items, extra_args: dict = None, return_config=False):
     return collection
 
 
-def load_type(item, extra_args: dict = None):
+def load_type(item, extra_args: dict = None) -> Any:
     """Loads the specified item defined by configuration
 
     Args:
@@ -100,8 +100,8 @@ def main_loop(config, infinite=True):  # pylint:disable=too-many-locals
     configuration = yaml.safe_load(open(config, "rb"))
     configure_logger(configuration["logging"])
     logger = create_logger()
-    collectors: List[Collector] = load_types(configuration["collectors"])
-    storages: List[Storage] = load_types(
+    collectors: Dict[str , Collector] = load_types(configuration["collectors"])
+    storages: Dict[str, Dict[str, Any]] = load_types(
         configuration["storages"], return_config=True)
     default_storage: Storage = None
     for storage in storages:
@@ -110,10 +110,10 @@ def main_loop(config, infinite=True):  # pylint:disable=too-many-locals
     if not default_storage:
         raise Exception(
             "A default storage needs to be set. Add a default property to one of the storage")
-    processors = load_types(
+    processors: [Dict, Processor] = load_types(
         configuration["processors"]) if "processors" in configuration else []
-    aggregators = load_types(configuration["aggregators"])
-    outputs = load_types(configuration["outputs"])
+    aggregators: Dict[str, Aggregator] = load_types(configuration["aggregators"])
+    outputs : Dict[str, Output] = load_types(configuration["outputs"])
 
     pipeline = PipelineProcessor()
     for processor in processors:
