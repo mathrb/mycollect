@@ -21,7 +21,7 @@ class CategoryAggregator(Aggregator):  # pylint: disable=R0903
     def aggregates(self, items: Iterable[MyCollectItem]):
         categories: dict = defaultdict(dict)
         item_count = 0
-        for mycollect_item in items:
+        for mycollect_item in self._filter_items(items):
             item_count += 1
             if mycollect_item.url not in categories[mycollect_item.category]:
                 categories[mycollect_item.category][mycollect_item.url] = []
@@ -43,3 +43,9 @@ class CategoryAggregator(Aggregator):  # pylint: disable=R0903
             results[category] = sorted_items[:self._top_articles]
         logger.info("dummy aggregation done", categories=len(results))
         return results
+
+    @staticmethod
+    def _filter_items(items: Iterable[MyCollectItem]) -> Iterable[MyCollectItem]:
+        for item in items:
+            if "article" in item.extra:
+                yield item
