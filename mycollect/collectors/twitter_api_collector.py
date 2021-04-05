@@ -15,10 +15,14 @@ class TwitterAPICollector(Collector):
     """Twitter collector, based on TwitterAPI streaming
     """
 
+    BASE_RULES = " has:links -is:retweet"
+
     def __init__(self, consumer_key, consumer_secret, languages, track):
         super().__init__()
         self._logger = create_logger().bind(collector='twitter')
-        self._languages = languages
+        self._base_rule = TwitterAPICollector.BASE_RULES
+        for language in languages:
+            self._base_rule += " lang:" + language
         self._api = TwitterAPI(consumer_key, consumer_secret,
                                auth_type='oAuth2', api_version='2')
         self._track = track
@@ -27,7 +31,7 @@ class TwitterAPICollector(Collector):
     def check_status(self):
         """Check status of this collect
         """
-        if self._twitter_thread and not self._twitter_thread.is_alive()():
+        if self._twitter_thread and not self._twitter_thread.is_alive():
             self.start()
 
     def start(self):
@@ -89,7 +93,7 @@ class TwitterAPICollector(Collector):
     def _register_rules(self):
         """Update the streaming rules
         """
-        rules = [{'value': t, 'tag': t} for t in self._track]
+        rules = [{'value': t + self._base_rule, 'tag': t} for t in self._track]
         response = self._api.request(
             "tweets/search/stream/rules", method_override='GET')
         j_response = response.json()
