@@ -38,4 +38,4 @@ jobs:
         pipenv run mypy mycollect
     - name: Test with pytest
       run: |
-        pipenv run pytest . --cov=mycollect --cov-fail-under 80 --cov-report=html
+        pipenv run pytest . --cov=mycollect --cov-fail-under 75 --cov-report=html
