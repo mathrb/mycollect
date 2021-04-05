@@ -1,8 +1,9 @@
 """Twitter API collection implementation
 """
 from threading import Thread
+from typing import Optional
 
-from TwitterAPI import TwitterAPI
+from TwitterAPI import TwitterAPI #type:ignore
 
 from mycollect.collectors import Collector
 from mycollect.logger import create_logger
@@ -70,7 +71,7 @@ class TwitterAPICollector(Collector):
         Returns:
             MyCollectItem: my collect item
         """
-        url: str = None
+        url: Optional[str] = None
         try:
             url = data["data"]["entities"]["urls"][0]["expanded_url"]
             url = unshorten_url(url)
