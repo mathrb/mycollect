@@ -27,7 +27,7 @@ class TwitterAPICollector(Collector):
     def check_status(self):
         """Check status of this collect
         """
-        if self._twitter_thread and not self._twitter_thread.isAlive():
+        if self._twitter_thread and not self._twitter_thread.is_alive()():
             self.start()
 
     def start(self):
