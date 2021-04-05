@@ -24,6 +24,7 @@ apscheduler = "*"
 newspaper3k = "*"
 influxdb = "*"
 cloudscraper = "*"
+twitterapi = "*"
 
 [requires]
 python_version = "3.8"
