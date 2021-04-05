@@ -21,8 +21,10 @@ class TwitterAPICollector(Collector):
         super().__init__()
         self._logger = create_logger().bind(collector='twitter')
         self._base_rule = TwitterAPICollector.BASE_RULES
+        lang_rule = []
         for language in languages:
-            self._base_rule += " lang:" + language
+            lang_rule.append("lang:" + language)
+        self._base_rule += " (" + " OR ".join(lang_rule) + ")"
         self._api = TwitterAPI(consumer_key, consumer_secret,
                                auth_type='oAuth2', api_version='2')
         self._track = track
