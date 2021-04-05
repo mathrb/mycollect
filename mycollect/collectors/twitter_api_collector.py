@@ -1,9 +1,8 @@
 """Twitter API collection implementation
 """
 from threading import Thread
-from typing import Optional
 
-from TwitterAPI import TwitterAPI #type:ignore
+from TwitterAPI import TwitterAPI  # type:ignore
 
 from mycollect.collectors import Collector
 from mycollect.logger import create_logger
@@ -75,7 +74,7 @@ class TwitterAPICollector(Collector):
             data["matching_rules"][0]["tag"],
             data["data"]["text"]
         )
-        
+
         try:
             url = data["data"]["entities"]["urls"][0]["expanded_url"]
             item.url = unshorten_url(url)
@@ -83,7 +82,7 @@ class TwitterAPICollector(Collector):
             item.extra["tweet_error_url"] = f"Key missing {err}"
         except IndexError:
             item.extra["tweet_error_url"] = "urls without url"
-        
+
         item.extra["tweet"] = data
         return item
 
