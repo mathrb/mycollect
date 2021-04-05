@@ -51,8 +51,7 @@ class TwitterAPICollector(Collector):
                 "user.fields": "id"
             })
             for item in response:
-                my_collect_item = self._data_to_my_collect_item(
-                    item, self._logger)
+                my_collect_item = self.data_to_my_collect_item(item)
                 self.emit(my_collect_item)
                 if not self._twitter_thread:
                     break
@@ -62,7 +61,7 @@ class TwitterAPICollector(Collector):
             self._logger.exception(err)
 
     @staticmethod
-    def _data_to_my_collect_item(data: dict, logger) -> MyCollectItem:
+    def data_to_my_collect_item(data: dict) -> MyCollectItem:
         """Transform a tweet to a MyCollectItem
 
         Args:
@@ -71,20 +70,20 @@ class TwitterAPICollector(Collector):
         Returns:
             MyCollectItem: my collect item
         """
-        url: Optional[str] = None
-        try:
-            url = data["data"]["entities"]["urls"][0]["expanded_url"]
-            url = unshorten_url(url)
-        except KeyError as err:
-            logger.error("key missing in tweet", key=err)
-        except IndexError:
-            logger.error("urls without url")
         item = MyCollectItem(
             "twitter",
             data["matching_rules"][0]["tag"],
-            data["data"]["text"],
-            url
+            data["data"]["text"]
         )
+        
+        try:
+            url = data["data"]["entities"]["urls"][0]["expanded_url"]
+            item.url = unshorten_url(url)
+        except KeyError as err:
+            item.extra["tweet_error_url"] = f"Key missing {err}"
+        except IndexError:
+            item.extra["tweet_error_url"] = "urls without url"
+        
         item.extra["tweet"] = data
         return item
 
