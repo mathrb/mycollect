@@ -15,18 +15,20 @@ class TwitterAPICollector(Collector):
     """Twitter collector, based on TwitterAPI streaming
     """
 
-    BASE_RULES = " has:links -is:retweet"
+    BASE_RULES = " has:links"
 
     def __init__(self, consumer_key, consumer_secret, languages, track):
         super().__init__()
         self._logger = create_logger().bind(collector='twitter')
         self._base_rule = TwitterAPICollector.BASE_RULES
+        lang_rule = []
         for language in languages:
-            self._base_rule += " lang:" + language
-        self._api = TwitterAPI(consumer_key, consumer_secret,
-                               auth_type='oAuth2', api_version='2')
+            lang_rule.append("lang:" + language)
+        self._base_rule += " (" + " OR ".join(lang_rule) + ")"
         self._track = track
         self._twitter_thread = None
+        self._api = TwitterAPI(consumer_key, consumer_secret,
+                               auth_type='oAuth2', api_version='2')
 
     def check_status(self):
         """Check status of this collect
