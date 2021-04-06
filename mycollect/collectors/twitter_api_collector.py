@@ -25,10 +25,10 @@ class TwitterAPICollector(Collector):
         for language in languages:
             lang_rule.append("lang:" + language)
         self._base_rule += " (" + " OR ".join(lang_rule) + ")"
-        self._api = TwitterAPI(consumer_key, consumer_secret,
-                               auth_type='oAuth2', api_version='2')
         self._track = track
         self._twitter_thread = None
+        self._api = TwitterAPI(consumer_key, consumer_secret,
+                               auth_type='oAuth2', api_version='2')
 
     def check_status(self):
         """Check status of this collect
