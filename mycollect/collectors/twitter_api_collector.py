@@ -15,7 +15,7 @@ class TwitterAPICollector(Collector):
     """Twitter collector, based on TwitterAPI streaming
     """
 
-    BASE_RULES = " has:links -is:retweet"
+    BASE_RULES = " has:links"
 
     def __init__(self, consumer_key, consumer_secret, languages, track):
         super().__init__()
