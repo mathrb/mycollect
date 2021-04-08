@@ -1,6 +1,8 @@
 """Twitter API collection implementation
 """
+from dataclasses import dataclass
 from threading import Thread
+import datetime
 
 from TwitterAPI import TwitterAPI  # type:ignore
 
@@ -8,6 +10,42 @@ from mycollect.collectors import Collector
 from mycollect.logger import create_logger
 from mycollect.structures import MyCollectItem
 from mycollect.utils import unshorten_url
+
+
+@dataclass
+class TwitterDelays():
+
+    """Container for timers
+    """
+
+    last_tweet_received: datetime.datetime
+    last_reconnection_attempt: datetime.datetime
+
+    def last_tweet_from_now(self) -> float:
+        """Seconds elapsed from the last tweet received
+
+        Returns:
+            float: Seconds elapsed from the last tweet received
+        """
+        return (datetime.datetime.now() - self.last_tweet_received).total_seconds()
+
+    def last_reconnection_attempt_from_now(self) -> float:
+        """Seconds elapsed from the last reconnection attempt
+
+        Returns:
+            float: Seconds elapsed from the last reconnection attempt
+        """
+        return (datetime.datetime.now() - self.last_reconnection_attempt).total_seconds()
+
+    def update_tweet_received(self):
+        """Update the last tweet received time
+        """
+        self.last_tweet_received = datetime.datetime.now()
+
+    def update_reconnection_attempt(self):
+        """Update the last reconnection attempt time
+        """
+        self.last_reconnection_attempt = datetime.datetime.now()
 
 
 class TwitterAPICollector(Collector):
@@ -26,23 +64,46 @@ class TwitterAPICollector(Collector):
             lang_rule.append("lang:" + language)
         self._base_rule += " (" + " OR ".join(lang_rule) + ")"
         self._track = track
-        self._twitter_thread = None
+        self._thread = None
         self._api = TwitterAPI(consumer_key, consumer_secret,
                                auth_type='oAuth2', api_version='2')
+        self._twitter_delays = TwitterDelays()
 
     def check_status(self):
         """Check status of this collect
         """
-        if self._twitter_thread and not self._twitter_thread.is_alive():
+        self._logger.debug("check status",
+                           thread_is_null=self._thread is None,
+                           thread_is_alive=False if not self._thread else self._thread.is_alive(),
+                           should_reconnect=self.should_reconnect(),
+                           last_tweet=self._twitter_delays.last_tweet_from_now())
+        if self._thread and not self._thread.is_alive() and self.should_reconnect():
+            self._logger.info("trigger reconnection")
             self.start()
+        elif self._twitter_delays.last_tweet_from_now() > 60 * 5:
+            self._logger.info("trigger reconnection")
+            self.start()
+
+    def should_reconnect(self) -> bool:
+        """Wethere we should reconnect the twitter stream or not
+
+        Returns:
+            bool: True if we should reconnect, False otherwise
+        """
+        return self._twitter_delays.last_reconnection_attempt_from_now() > 60 * 5
 
     def start(self):
         """Starts the twitter collect
         """
         try:
+            if self._thread:
+                self._logger.info("stopping collection")
+                self.stop()
+                self._logger.info("collection stopped")
+            self._twitter_delays.update_reconnection_attempt()
             self._register_rules()
-            self._twitter_thread = Thread(target=self._collect, daemon=True)
-            self._twitter_thread.start()
+            self._thread = Thread(target=self._collect, daemon=True)
+            self._thread.start()
         except Exception as err:  # pylint:disable=broad-except
             self._logger.exception(err)
 
@@ -56,9 +117,10 @@ class TwitterAPICollector(Collector):
                 "user.fields": "id"
             })
             for item in response:
+                self._twitter_delays.update_tweet_received()
                 my_collect_item = self.data_to_my_collect_item(item)
                 self.emit(my_collect_item)
-                if not self._twitter_thread:
+                if not self._thread:
                     break
             self._logger.info("closing twitter stream")
             response.close()
@@ -114,6 +176,6 @@ class TwitterAPICollector(Collector):
     def stop(self):
         """Stops the twitter stream
         """
-        local_thread = self._twitter_thread
-        self._twitter_thread = None
+        local_thread = self._thread
+        self._thread = None
         local_thread.join()
