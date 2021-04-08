@@ -78,8 +78,10 @@ class TwitterAPICollector(Collector):
                            should_reconnect=self.should_reconnect(),
                            last_tweet=self._twitter_delays.last_tweet_from_now())
         if self._thread and not self._thread.is_alive() and self.should_reconnect():
+            self._logger.info("trigger reconnection")
             self.start()
         elif self._twitter_delays.last_tweet_from_now() > 60 * 5:
+            self._logger.info("trigger reconnection")
             self.start()
 
     def should_reconnect(self) -> bool:
