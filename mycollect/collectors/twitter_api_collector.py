@@ -18,8 +18,8 @@ class TwitterDelays():
     """Container for timers
     """
 
-    last_tweet_received: datetime.datetime
-    last_reconnection_attempt: datetime.datetime
+    last_tweet_received: datetime.datetime = datetime.datetime.now()
+    last_reconnection_attempt: datetime.datetime = datetime.datetime.now()
 
     def last_tweet_from_now(self) -> float:
         """Seconds elapsed from the last tweet received
