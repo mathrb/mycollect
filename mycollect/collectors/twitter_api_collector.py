@@ -95,7 +95,9 @@ class TwitterAPICollector(Collector):
         """
         try:
             if self._thread:
+                self._logger.info("stopping collection")
                 self.stop()
+                self._logger.info("collection stopped")
             self._twitter_delays.update_reconnection_attempt()
             self._register_rules()
             self._thread = Thread(target=self._collect, daemon=True)
