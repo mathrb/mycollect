@@ -67,6 +67,7 @@ class TwitterAPICollector(Collector):
         self._thread = None
         self._api = TwitterAPI(consumer_key, consumer_secret,
                                auth_type='oAuth2', api_version='2')
+        self._response = None
         self._twitter_delays = TwitterDelays()
 
     def check_status(self):
@@ -111,19 +112,19 @@ class TwitterAPICollector(Collector):
         """Starts collecting from the twitter stream
         """
         try:
-            response = self._api.request('tweets/search/stream', params={
+            self._response = self._api.request('tweets/search/stream', params={
                 "tweet.fields": "lang,entities",
                 "media.fields": "url,preview_image_url",
                 "user.fields": "id"
             })
-            for item in response:
+            for item in self._response:
                 self._twitter_delays.update_tweet_received()
                 my_collect_item = self.data_to_my_collect_item(item)
                 self.emit(my_collect_item)
                 if not self._thread:
                     break
             self._logger.info("closing twitter stream")
-            response.close()
+            self._response.close()
         except Exception as err:  # pylint:disable=broad-except
             self._logger.exception(err)
 
@@ -178,4 +179,5 @@ class TwitterAPICollector(Collector):
         """
         local_thread = self._thread
         self._thread = None
+        self._response.close()
         local_thread.join()
