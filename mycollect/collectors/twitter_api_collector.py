@@ -112,6 +112,7 @@ class TwitterAPICollector(Collector):
         """Starts collecting from the twitter stream
         """
         try:
+            logger = create_logger()
             self._response = self._api.request('tweets/search/stream', params={
                 "tweet.fields": "lang,entities",
                 "media.fields": "url,preview_image_url",
@@ -123,10 +124,10 @@ class TwitterAPICollector(Collector):
                 self.emit(my_collect_item)
                 if not self._thread:
                     break
-            self._logger.info("closing twitter stream")
+            logger.info("closing twitter stream")
             self._response.close()
         except Exception as err:  # pylint:disable=broad-except
-            self._logger.exception(err)
+            logger.exception(err)
 
     @staticmethod
     def data_to_my_collect_item(data: dict) -> MyCollectItem:
