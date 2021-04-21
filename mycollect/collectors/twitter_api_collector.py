@@ -5,7 +5,6 @@ from threading import Thread
 import datetime
 
 from TwitterAPI import TwitterAPI  # type:ignore
-from TwitterAPI.TwitterAPI import _StreamingIterable  # type:ignore
 
 from mycollect.collectors import Collector
 from mycollect.logger import create_logger
@@ -68,7 +67,7 @@ class TwitterAPICollector(Collector):
         self._thread = None
         self._api = TwitterAPI(consumer_key, consumer_secret,
                                auth_type='oAuth2', api_version='2')
-        self._stream_iterator = None
+        self._response = None
         self._twitter_delays = TwitterDelays()
 
     def check_status(self):
@@ -114,20 +113,19 @@ class TwitterAPICollector(Collector):
         """
         try:
             logger = create_logger()
-            response = self._api.request('tweets/search/stream', params={
+            self._response = self._api.request('tweets/search/stream', params={
                 "tweet.fields": "lang,entities",
                 "media.fields": "url,preview_image_url",
                 "user.fields": "id"
             })
-            self._stream_iterator = _StreamingIterable(response.response, response.options)
-            for item in self._stream_iterator:
+            for item in self._response:
                 self._twitter_delays.update_tweet_received()
                 my_collect_item = self.data_to_my_collect_item(item)
                 self.emit(my_collect_item)
                 if not self._thread:
                     break
             logger.info("closing twitter stream")
-            response.close()
+            self._response.close()
         except Exception as err:  # pylint:disable=broad-except
             logger.exception(err)
 
@@ -182,5 +180,6 @@ class TwitterAPICollector(Collector):
         """
         local_thread = self._thread
         self._thread = None
-        self._stream_iterator.stream = None
+        self._response.response.raw.read()
+        self._response.close()
         local_thread.join()
