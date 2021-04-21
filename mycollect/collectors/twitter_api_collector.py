@@ -119,7 +119,7 @@ class TwitterAPICollector(Collector):
                 "media.fields": "url,preview_image_url",
                 "user.fields": "id"
             })
-            self._stream_iterator = _StreamingIterable(self._response, self._response.options)
+            self._stream_iterator = _StreamingIterable(response.response, response.options)
             for item in self._stream_iterator:
                 self._twitter_delays.update_tweet_received()
                 my_collect_item = self.data_to_my_collect_item(item)
