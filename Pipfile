@@ -11,6 +11,9 @@ autopep8 = "*"
 pytest-cov = "*"
 rope = "*"
 mypy = "*"
+safety = "*"
+types-requests = "*"
+types-pyyaml = "*"
 
 [packages]
 tweepy = "*"

@@ -36,6 +36,9 @@ jobs:
     - name: Mypy
       run: |
         pipenv run mypy mycollect
+    - name: Safety
+      run: |
+        pipenv run safety check
     - name: Test with pytest
       run: |
         pipenv run pytest . --cov=mycollect --cov-fail-under 75 --cov-report=html
