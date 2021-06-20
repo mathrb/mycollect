@@ -1,9 +1,10 @@
 """Twitter collection implementation
 """
 import json
-from typing import Iterator, Optional
+from typing import Iterator, Optional, List, Dict, Tuple
 from urllib.parse import urlparse
 import time
+import re
 
 from tweepy import OAuthHandler, Stream  # type: ignore
 from tweepy.streaming import StreamListener  # type: ignore
@@ -22,7 +23,6 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
                  access_token, access_secret, languages, low_priority_url, track):
         super().__init__()
         self._logger = create_logger().bind(collector='twitter')
-        self._track = track
         self._languages = languages
         self._low_priority_url = low_priority_url
         self._auth = OAuthHandler(consumer_key, consumer_secret)
@@ -30,6 +30,7 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
         self._twitter_stream = Stream(self._auth, self)
         self._last_data = time.time()
         self._timer_counter = 1
+        self._track, self._filters = self.parse_track(track)
 
     def start(self):
         """Collect data from twitter
@@ -90,7 +91,7 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
                     self._logger.exception(err)
                     raise
 
-            if url and category:
+            if url and category and not self.match_filter(category, loaded_tweet.get("text", "")):
                 item = MyCollectItem(provider="twitter",
                                      category=category,
                                      text=loaded_tweet.get("text", None),
@@ -227,3 +228,45 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
             if "display_url" in item:
                 text += item["display_url"] + " "
         return text
+
+    def match_filter(self, category: str, text: str) -> bool:
+        """Does the text match a filter of this category
+
+        Args:
+            category (str): the category of the tweet
+            text (str): the text of the tweet
+
+        Returns:
+            bool: True if it matches a filter, False otherwise
+        """
+        lower_text = text.lower()
+        for cat_filter in self._filters.get(category, []):
+            if cat_filter in lower_text:
+                return True
+        return False
+
+    @staticmethod
+    def parse_track(track: List[str]) -> Tuple[List[str], Dict[str, List[str]]]:
+        """Parse the tracks to find filters
+
+        Args:
+            track (List[str]): List of text that compose the track
+
+        Returns:
+            Tuple[List[str], Dict[str, List[str]]]: the new track and the filters
+        """
+        token_filter = re.compile(r"\s-([a-zA-Z]+)")
+        group_filter: Dict[str, List[str]] = {}
+        new_track = list(track)
+        for idx, search in enumerate(new_track):
+            updated_search = search
+            local_filters = []
+            tokens = list(token_filter.finditer(search))
+            tokens.reverse()
+            for match in tokens:
+                local_filters.append(match.group(1).lower())
+                updated_search = updated_search[0:match.start()] + \
+                    updated_search[match.end():]
+            new_track[idx] = updated_search
+            group_filter[updated_search] = local_filters
+        return new_track, group_filter
