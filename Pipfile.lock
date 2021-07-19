@@ -586,10 +586,10 @@
         },
         "twitterapi": {
             "hashes": [
-                "sha256:83e88251ccad998d60b3f825816fbcb954ccc9403b74648da15bb529ab49670f"
+                "sha256:6f4afcd7db13ca20d8a96491c1714b22b692decafaa8179a50ea20af054b09ac"
             ],
             "index": "pypi",
-            "version": "==2.7.3"
+            "version": "==2.7.5"
         },
         "tzlocal": {
             "hashes": [
