@@ -105,19 +105,19 @@ def main_loop(config, infinite=True):  # pylint:disable=too-many-locals
     storages: Dict[str, Dict[str, Any]] = load_types(
         configuration["storages"], return_config=True)
     default_storage: Optional[Storage] = None
-    for key, item in storages.items():
+    for item in storages.values():
         if item["configuration"].get("default", False):
             default_storage = item["instance"]
     if not default_storage:
         raise Exception(
             "A default storage needs to be set. Add a default property to one of the storage")
-    processors: [Dict, Processor] = load_types(
-        configuration["processors"]) if "processors" in configuration else []
+    processors: Dict[str, Processor] = load_types(
+        configuration["processors"]) if "processors" in configuration else {}
     aggregators: Dict[str, Aggregator] = load_types(configuration["aggregators"])
     outputs : Dict[str, Output] = load_types(configuration["outputs"])
 
     pipeline = PipelineProcessor()
-    for key, item in processors:
+    for item in processors.values():
         pipeline.append_processor(item)
     pipeline.append_processor(ExitProcessor(
         [storages[s]["instance"] for s in storages])) #pylint:disable=consider-using-dict-items
