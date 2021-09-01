@@ -4,7 +4,7 @@
 import argparse
 import datetime
 import time
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 from apscheduler.schedulers.background import BackgroundScheduler  # type: ignore
 from apscheduler.triggers.cron import CronTrigger  # type: ignore
@@ -97,16 +97,17 @@ def main_loop(config, infinite=True):  # pylint:disable=too-many-locals
     """This is the run forever loop definition
     """
 
-    configuration = yaml.safe_load(open(config, "rb"))
-    configure_logger(configuration["logging"])
+    with open(config, "rb") as configuration_file:
+        configuration = yaml.safe_load(configuration_file)
+        configure_logger(configuration["logging"])
     logger = create_logger()
     collectors: Dict[str , Collector] = load_types(configuration["collectors"])
     storages: Dict[str, Dict[str, Any]] = load_types(
         configuration["storages"], return_config=True)
-    default_storage: Storage = None
-    for storage in storages:
-        if storages[storage]["configuration"].get("default", False):
-            default_storage = storages[storage]["instance"]
+    default_storage: Optional[Storage] = None
+    for key, item in storages.items():
+        if item["configuration"].get("default", False):
+            default_storage = item["instance"]
     if not default_storage:
         raise Exception(
             "A default storage needs to be set. Add a default property to one of the storage")
@@ -116,20 +117,20 @@ def main_loop(config, infinite=True):  # pylint:disable=too-many-locals
     outputs : Dict[str, Output] = load_types(configuration["outputs"])
 
     pipeline = PipelineProcessor()
-    for processor in processors:
-        pipeline.append_processor(processors[processor])
+    for key, item in processors:
+        pipeline.append_processor(item)
     pipeline.append_processor(ExitProcessor(
-        [storages[s]["instance"] for s in storages]))
+        [storages[s]["instance"] for s in storages])) #pylint:disable=consider-using-dict-items
 
-    for collector in collectors:
-        logger.info("starting collector", collector=collector)
-        collectors[collector].set_callback(pipeline.update_item)
-        collectors[collector].start()
+    for key, collector in collectors.items():
+        logger.info("starting collector", collector=key)
+        collector.set_callback(pipeline.update_item)
+        collector.start()
 
-    for aggregator in aggregators:
-        run_agg_args = [default_storage, aggregators[aggregator],
+    for key, aggregator in aggregators.items():
+        run_agg_args = [default_storage, aggregator,
                         outputs.values(), logger]
-        trigger = CronTrigger.from_crontab(aggregators[aggregator].schedule)
+        trigger = CronTrigger.from_crontab(aggregator.schedule)
         SCHEDULER.add_job(run_aggregator, trigger, args=run_agg_args)
 
     SCHEDULER.start()
@@ -137,12 +138,12 @@ def main_loop(config, infinite=True):  # pylint:disable=too-many-locals
     try:
         while infinite:
             time.sleep(1)
-            for local_connector in collectors:
-                collectors[local_connector].check_status()
+            for collector in collectors.values():
+                collector.check_status()
     except KeyboardInterrupt:
-        for local_collector in collectors:
-            logger.info("stopping collector", collector=local_collector)
-            collectors[local_collector].stop()
+        for key, local_collector in collectors.items():
+            logger.info("stopping collector", collector=key)
+            local_collector.stop()
         SCHEDULER.shutdown()
         logger.info("shutdown gracefully")
 

@@ -46,10 +46,11 @@ class FileStorage(Storage):
                 file_path = self._get_file_path(
                     provider, round(current_date.timestamp()))
                 if os.path.exists(file_path):
-                    for line in open(file_path, encoding='utf-8'):
-                        item = json.loads(line)
-                        if item["timestamp"] >= timestamp:
-                            yield MyCollectItem.from_dict(item["data"])
+                    with open(file_path, encoding='utf-8') as input_file:
+                        for line in input_file:
+                            item = json.loads(line)
+                            if item["timestamp"] >= timestamp:
+                                yield MyCollectItem.from_dict(item["data"])
                 current_date += datetime.timedelta(days=1)
 
     def _get_file_path(self, provider, timestamp: int):

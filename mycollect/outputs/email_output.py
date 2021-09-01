@@ -116,9 +116,9 @@ class EmailOutput(Output):  # pylint:disable=too-few-public-methods
             aggregate (dict): aggregate
             notification_channel (str): the notification channel used by the aggregator
         """
-        for template in self._templates:
-            if template == notification_channel:
-                body = self._templates[template].render(results=aggregate)
+        for key, template in self._templates.items():
+            if key == notification_channel:
+                body = template.render(results=aggregate)
                 sent = self._email_sender.send_email(
                     self._sender, self._recipients, "News reporting", body)
                 self._logger.info("email sent", result=sent,
