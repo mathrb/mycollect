@@ -119,7 +119,7 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
         Returns:
             str -- category of the tweet
         """
-        best_track = None
+        best_track : Optional[Tuple[str, int]] = None
         full_text = self.get_text_for_category_selection(tweet).lower()
         for track in self._track:
             words = track.split()
@@ -130,7 +130,7 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
             if i == 0:
                 if best_track is None:
                     best_track = (track, len(words))
-                elif best_track[1] < len(words):
+                elif best_track[1] < len(words): # pylint: disable=unsubscriptable-object
                     best_track = (track, len(words))
         if best_track:
             return best_track[0]
