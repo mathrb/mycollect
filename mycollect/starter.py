@@ -112,7 +112,7 @@ def main_loop(config, infinite=True):  # pylint:disable=too-many-locals
         raise Exception(
             "A default storage needs to be set. Add a default property to one of the storage")
     processors: Dict[str, Processor] = load_types(
-        configuration["processors"]) if "processors" in configuration else []
+        configuration["processors"]) if "processors" in configuration else {}
     aggregators: Dict[str, Aggregator] = load_types(configuration["aggregators"])
     outputs : Dict[str, Output] = load_types(configuration["outputs"])
 
