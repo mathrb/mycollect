@@ -6,61 +6,50 @@ from urllib.parse import urlparse
 import time
 import re
 
-from tweepy import OAuthHandler, Stream  # type: ignore
-from tweepy.streaming import StreamListener  # type: ignore
-
+from tweepy import Stream  # type: ignore
 from mycollect.collectors import Collector
 from mycollect.logger import create_logger
 from mycollect.structures import MyCollectItem
 from mycollect.utils import unshorten_url
 
 
-class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-instance-attributes
+class TwitterCollector(Stream, Collector):  # pylint:disable=too-many-instance-attributes
     """Twitter collector, based on Tweepy streaming
     """
 
     def __init__(self, consumer_key, consumer_secret,  # pylint:disable=too-many-arguments
                  access_token, access_secret, languages, low_priority_url, track):
-        super().__init__()
+        super().__init__(consumer_key=consumer_key, consumer_secret=consumer_secret,
+                         access_token=access_token, access_token_secret=access_secret)
         self._logger = create_logger().bind(collector='twitter')
         self._languages = languages
         self._low_priority_url = low_priority_url
-        self._auth = OAuthHandler(consumer_key, consumer_secret)
-        self._auth.set_access_token(access_token, access_secret)
-        self._twitter_stream = Stream(self._auth, self)
         self._last_data = time.time()
         self._timer_counter = 1
         self._track, self._filters = self.parse_track(track)
+        self._exit = False
 
     def start(self):
         """Collect data from twitter
         """
         self._last_data = time.time()
-        self._twitter_stream.filter(
-            track=self._track, languages=self._languages, is_async=True)
+        self.filter(
+            track=self._track, languages=self._languages, threaded=True)
 
     def check_status(self):
         """Check the status of the collect
         """
-        is_alive = self._twitter_stream._thread.is_alive()  # pylint:disable=protected-access
-        if not self._twitter_stream.running or not is_alive:
+        if not self.running and not self._exit:
             self._logger.info("twitter collect not running, restarting",
-                              running=self._twitter_stream.running,
-                              is_alive=is_alive)
-            self.stop()
-            self._twitter_stream = Stream(self._auth, self)
+                              running=self.running)
+            self.disconnect()
             self.start()
-        elif time.time() - self._last_data > 1 * 60 * self._timer_counter:
+        elif time.time() - self._last_data > 1 * 60 * self._timer_counter and not self._exit:
             self._logger.info("twitter restart after being idle",
-                              is_alive=is_alive,
-                              running=self._twitter_stream.running,
-                              snooze_time=self._twitter_stream.snooze_time,
-                              retry_time=self._twitter_stream.retry_time,
-                              retry_count=self._twitter_stream.retry_count,
+                              running=self.running,
                               timer_counter=self._timer_counter,
                               last_data=self._last_data)
-            self.stop()
-            self._twitter_stream = Stream(self._auth, self)
+            self.disconnect()
             self.start()
             if self._timer_counter < 60:
                 self._timer_counter += 1
@@ -68,8 +57,9 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
     def stop(self):
         """Stops the streaming
         """
-        if self._twitter_stream:
-            self._twitter_stream.disconnect()
+        if not self._exit:
+            self._exit = True
+            self.disconnect()
 
     def on_data(self, raw_data):
         try:
@@ -99,16 +89,19 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
                 item.extra["tweet"] = loaded_tweet
                 self.emit(item)
         except BaseException as err:  # pylint:disable=broad-except
-            self._logger.error("on_data unexpected error: {}".format(err))
+            self._logger.error(f"on_data unexpected error: {err}")
             self._logger.debug(err, exception=err)
         return True
 
-    def on_error(self, status_code):
+    def on_request_error(self, status_code):
         self._logger.error("twitter error", status=status_code)
         return True
 
     def on_exception(self, exception):
         self._logger.error("twitter exception", exception=exception)
+
+    def on_disconnect(self):
+        self._logger.warn("twitter disconnection")
 
     def get_category(self, tweet: dict) -> Optional[str]:
         """Gets the category associated to the tweet
@@ -119,7 +112,7 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
         Returns:
             str -- category of the tweet
         """
-        best_track : Optional[Tuple[str, int]] = None
+        best_track: Optional[Tuple[str, int]] = None
         full_text = self.get_text_for_category_selection(tweet).lower()
         for track in self._track:
             words = track.split()
@@ -130,7 +123,7 @@ class TwitterCollector(StreamListener, Collector):  # pylint:disable=too-many-in
             if i == 0:
                 if best_track is None:
                     best_track = (track, len(words))
-                elif best_track[1] < len(words): # pylint: disable=unsubscriptable-object
+                elif best_track[1] < len(words):  # pylint: disable=unsubscriptable-object
                     best_track = (track, len(words))
         if best_track:
             return best_track[0]
