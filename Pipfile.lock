@@ -395,11 +395,11 @@
         },
         "pyaml": {
             "hashes": [
-                "sha256:a1636d63c476328a07213d0b7111bb63570f1ab8a3eddf60522630250c23d975",
-                "sha256:aa61d6ebef7cd8ec691620616258d904bfbc152e9cf44557202b8bacc9ce5cce"
+                "sha256:19985ed303c3a985de4cf8fd329b6d0a5a5b5c9035ea240eccc709ebacbaf4a0",
+                "sha256:c6519fee13bf06e3bb3f20cacdea8eba9140385a7c2546df5dbae4887f768383"
             ],
             "index": "pypi",
-            "version": "==21.8.3"
+            "version": "==21.10.1"
         },
         "pyparsing": {
             "hashes": [
@@ -749,7 +749,7 @@
                 "sha256:9c2ea1e62d871267b78307fe511c0838ba0da28698c5732d54e2790bf3ba9899",
                 "sha256:e17d6e2b81095c9db0a03a8025a957f334d6ea30b26f9ec70805411e5c7c81f2"
             ],
-            "markers": "python_version < '4' and python_full_version >= '3.6.1'",
+            "markers": "python_version < '4.0' and python_full_version >= '3.6.1'",
             "version": "==5.9.3"
         },
         "lazy-object-proxy": {
