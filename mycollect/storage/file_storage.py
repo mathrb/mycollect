@@ -48,9 +48,12 @@ class FileStorage(Storage):
                 if os.path.exists(file_path):
                     with open(file_path, encoding='utf-8') as input_file:
                         for line in input_file:
-                            item = json.loads(line)
-                            if item["timestamp"] >= timestamp:
-                                yield MyCollectItem.from_dict(item["data"])
+                            try:
+                                item = json.loads(line)
+                                if item["timestamp"] >= timestamp:
+                                    yield MyCollectItem.from_dict(item["data"])
+                            except json.decoder.JSONDecodeError:
+                                self._logger.warn(f"Invalid json line in file {file_path}: {line}")
                 current_date += datetime.timedelta(days=1)
 
     def _get_file_path(self, provider, timestamp: int):
