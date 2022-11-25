@@ -19,7 +19,7 @@ def unshorten_url(url):
     """
         Unshorten the url
     """
-    response = requests.get(url)
+    response = requests.get(url, timeout=30)
     new_url = url
     for item in response.history:
         if item.status_code == 301 and "location" in item.headers:
